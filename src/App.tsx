@@ -17,7 +17,7 @@ export default function App() {
       setArreglo(paso.estadoActual);
       setIndicesActivos(paso.indicesActivos);
 
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     }
 
     setIndicesActivos([]);
