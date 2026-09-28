@@ -36,7 +36,7 @@ específicamente 6 algoritmos de fuerza bruta y 2 de divide y vencerás los cual
 # Cómo empezar
 - Clona el repositorio:
 ```bash
-git clone
+git clone https://github.com/Equipo-Compilers/Pagina_web_algoritmos_ordenamiento.git
 ```
 - Instala las dependencias 
 ```bash
