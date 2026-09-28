@@ -30,5 +30,29 @@ específicamente 6 algoritmos de fuerza bruta y 2 de divide y vencerás los cual
 
 # Requisitos
 - Node.js v26.8.2 — verifica si tienes instalado con el comando "node -v".
-- Si no coincide, instálala desde https://nodejs.org/ preferentemente la version que diga LTS para que tenga soporte futuro.
+- Si no coincide, instálala desde https://nodejs.org/](https://nodejs.org/es/download preferentemente la version que diga LTS para que tenga soporte futuro.
 - npm (incluido con Node) y Git.
+
+# Cómo empezar
+- Clona el repositorio:
+git clone
+
+- Instala las dependencias 
+npm install
+
+- Levanta el servidor de desarrollo para confirmar que todo corre como deberia de ser:
+npm run dev
+
+- Crea tu branch a partir de main, según la tarea que tengas asignada en el backlog:
+git checkout -b feature/<nombre-de-tu-tarea>
+Ejemplos: feature/quick-sort, feature/topbar, feature/gnome-sort.
+
+# Al terminar la tarea 
+npm run lint
+git add .
+git commit -m "feat: "
+git push -u origin feature/
+
+- Mensajes de commit en formato Conventional Commits (feat:, fix:, docs:, chore:).
+- Abre un Pull Request hacia main. La rama main está protegida: se requiere mínimo 1 aprobación y resolver todas las conversaciones antes de mergear.
+- Mueve tu tarjeta del backlog de in-process a done.
