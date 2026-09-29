@@ -3,7 +3,7 @@ import { bubbleSort } from './BubbleSort';
 import './App.css';
 
 export default function App() {
-  const [arreglo, setArreglo] = useState<number[]>([64, 34, 25, 12, 22, 11, 90, 50, 80]);
+  const [arreglo, setArreglo] = useState<number[]>([64, 34, 25, 12, 22, 11, 230, 80, 120]);
   const [indicesActivos, setIndicesActivos] = useState<number[]>([]);
   const [ordenando, setOrdenando] = useState(false);
 
