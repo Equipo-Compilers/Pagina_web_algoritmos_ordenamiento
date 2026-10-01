@@ -35,8 +35,8 @@ EL objetivo principal es el análisis y visualización de cómo se ejecutan algo
 - Claude
 
 # Requisitos
-- Node.js v26.8.2 — verifica si tienes instalado con el comando "node -v".
-- Si no coincide, instálala desde https://nodejs.org/](https://nodejs.org/es/download preferentemente la version que diga LTS para que tenga soporte futuro.
+- Node.js v24.21.0 — verifica si tienes instalado con el comando "node -v".
+- Si no coincide, instálala desde https://nodejs.org/es/download preferentemente la version que diga LTS para que tenga soporte futuro.
 - npm (incluido con Node) y Git.
 
 # Cómo empezar a trabajar 
