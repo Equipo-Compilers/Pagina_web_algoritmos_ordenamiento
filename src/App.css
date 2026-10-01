@@ -5,12 +5,19 @@ box-sizing: border-box;
  }
 
 
+
 .cabecera{
 display: flex;
-justify-content: space-between;
+gap: 400px;
 align-items: center;
-padding: 20px 40px; 
+padding: 5px 80px 2px 50px; 
 }
+
+.grupoBotones{
+display: flex;
+gap: 20px;}
+
+
 .pantallaCompleta{
 background-color: #1E1E1E;
 color: white;
@@ -19,12 +26,12 @@ display: flex;
 flex-direction: column;
 }
 
-//.areaCentral{
+.areaCentral{
     display: flex;
     justify-content: row;
     flex: 1; 
     gap: 20px;
-    padding: 20px;
+    padding: 10px;
 
 }
 
@@ -42,7 +49,21 @@ flex-direction: column;
     background-color: #5814c5;
     border-radius: 30px;
     padding: 30px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding:30px;
 }
+.barra{
+width: 70px;
+background-color: #4a4a8a;
+border-radius: 5px 5px 0px 0px;
+border-color: white;
+border-width: 2px;
+border-style: dashed;
+text-align: center;
+}
+
 
 .panelDerecho{
     width: 250px;
@@ -57,4 +78,13 @@ display: flex;
 align-items: center;
 gap: 20px;
 padding: 20px;
+}
+
+.botonPildora{
+    background-color: #4a4a8a;
+    padding: 8px 70px 8px 70px;
+    border-radius: 30px;
+    border-color: #4a4a8a;
+    color: white;
+    gap: 20px;
 }
