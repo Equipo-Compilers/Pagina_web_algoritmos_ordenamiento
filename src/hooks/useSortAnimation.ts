@@ -8,13 +8,13 @@ export function useSortAnimation(arregloInicial: number[]) {
   const [indicesActivos, setIndicesActivos] = useState<number[]>([]);
   const [ordenando, setOrdenando] = useState(false);
  
-  const iniciarAnimacion = async (algoritmo: SortGenerator, velocidadMs = 300) => {
+  const iniciarAnimacion = async (algoritmo: SortGenerator, velocidadMs = 150) => {
     if (ordenando) return;
     setOrdenando(true);
  
-    const generador = algoritmo(arreglo);
+    const generadorPasos = algoritmo(arreglo);
  
-    for (const paso of generador) {
+    for (const paso of generadorPasos) {
       setArreglo(paso.estadoActual);
       setIndicesActivos(paso.indicesActivos);
       await new Promise((resolve) => setTimeout(resolve, velocidadMs));
@@ -24,10 +24,11 @@ export function useSortAnimation(arregloInicial: number[]) {
     setOrdenando(false);
   };
  
-  const desordenar = () => {
+  const reemplazarArreglo = (nuevo: number[]) => {
     if (ordenando) return;
-    setArreglo((prev) => [...prev].sort(() => Math.random() - 0.5));
+    setArreglo(nuevo);
+    setIndicesActivos([]);
   };
  
-  return { arreglo, indicesActivos, ordenando, iniciarAnimacion, desordenar };
+  return { arreglo, indicesActivos, ordenando, iniciarAnimacion, reemplazarArreglo };
 }

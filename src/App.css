@@ -1,67 +1,112 @@
 *{
-margin: 0;
-padding: 0;
-box-sizing: border-box;    
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;    
  }
 
-
-
 .cabecera{
-display: flex;
-gap: 400px;
-align-items: center;
-padding: 5px 80px 2px 50px; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 5px 40px;
 }
 
 .grupoBotones{
-display: flex;
-gap: 20px;}
-
+    display: flex;
+    gap: 20px;
+}
 
 .pantallaCompleta{
-background-color: #1E1E1E;
-color: white;
-height: 100vh;
-display: flex;
-flex-direction: column;
+    background-color: #1E1E1E;
+    color: white;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .areaCentral{
     display: flex;
-    justify-content: row;
     flex: 1; 
     gap: 20px;
     padding: 10px;
-
+    min-height: 0;
 }
 
-
 .panelIzquierdo {
-    width: 250px;
+    width: clamp(160px, 18%, 250px);
+    flex-shrink: 0;
     background-color: #4a4a8a;
     padding: 30px;
     border-radius: 30px;
-
 }
 
 .lienzo{
     flex: 1;
+    min-width: 0;
     background-color: #5814c5;
     border-radius: 30px;
     padding: 30px;
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    padding:30px;
+    gap: 6px;
+    overflow-x: auto;
 }
+
+@media (max-width: 800px) {
+  .areaCentral {
+    flex-direction: column;
+  }
+  .panelIzquierdo,
+  .panelDerecho {
+    width: 100%;
+  }
+}
+
 .barra{
-width: 70px;
-background-color: #4a4a8a;
-border-radius: 5px 5px 0px 0px;
-border-color: white;
-border-width: 2px;
-border-style: dashed;
-text-align: center;
+    flex: 1 1 0;
+    min-width: 20px;
+    max-width: 70px;
+    background-color: #4a4a8a;
+    border-radius: 5px 5px 0px 0px;
+    border-color: white;
+    border-width: 2px;
+    border-style: dashed;
+    text-align: center;
+    transition: height 0.15s ease, background-color 0.15s ease;
+}
+
+.barra-activa{
+    background-color: #ef4444;
+    border-color: #ef4444;
+}
+
+.panelIzquierdo{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.botonAlgoritmo{
+    background-color: #3a3a6a;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.botonAlgoritmo-activo{
+background-color: #5814c5;
+}
+
+.botonPildora:disabled,
+.botonAlgoritmo:disabled{
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 
@@ -70,14 +115,14 @@ text-align: center;
     background-color: #4a4a8a;
     padding: 30px;
     border-radius: 30px;
-    
 }
+
 .controles{
-justify-content: center;
-display: flex;
-align-items: center;
-gap: 20px;
-padding: 20px;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
 }
 
 .botonPildora{
