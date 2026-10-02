@@ -1,61 +1,48 @@
-import { useState } from 'react';
-import { bubbleSort } from './BubbleSort';
 import './App.css';
+import { useState } from 'react';
+import { generador } from './generador';
 
 export default function App() {
-  const [arreglo, setArreglo] = useState<number[]>([64, 34, 25, 12, 22, 11, 230, 80, 120]);
-  const [indicesActivos, setIndicesActivos] = useState<number[]>([]);
-  const [ordenando, setOrdenando] = useState(false);
-
-  const iniciarAnimacion = async () => {
-    if (ordenando) return;
-    setOrdenando(true);
-
-    const generador = bubbleSort(arreglo);
-
-    for (const paso of generador) {
-      setArreglo(paso.estadoActual);
-      setIndicesActivos(paso.indicesActivos);
-
-      await new Promise((resolve) => setTimeout(resolve, 500));
-    }
-
-    setIndicesActivos([]);
-    setOrdenando(false);
-  };
-
-  const desordenar = () => {
-    setArreglo((prev) => [...prev].sort(() => Math.random() - 0.5));
-  };
-
+  const [arreglo, setArreglo] = useState<number[]>(generador(15));
+  const maximo = Math.max(...arreglo);
   return (
-    <div className="contenedor">
-      <h1 className="titulo">Visualizador de Bubble Sort</h1>
+    <div className="pantallaCompleta"> 
+<header className="cabecera">
+  <span className="logo">the compilers</span>
+  
+  <div className="grupoBotones">
+    <button className="botonPildora">start</button>
+    <button className="botonPildora">reset</button> 
+    <button className="botonPildora">graphic</button>
+  </div>
+</header>
 
-      <div className="area-barras">
-        {arreglo.map((valor, indice) => {
-          const estaActivo = indicesActivos.includes(indice);
-          return (
-            <div
-              key={indice}
-              className={`barra ${estaActivo ? 'barra-activa' : ''}`}
-              style={{ height: `${valor}px` }}
-            >
-              {valor}
-            </div>
-          );
-        })}
-      </div>
+<main className="areaCentral">
 
-      <div className="controles">
-        <button onClick={iniciarAnimacion} disabled={ordenando} className="boton boton-iniciar">
-          {ordenando ? 'Ordenando...' : 'Iniciar Ordenamiento'}
-        </button>
+  <aside className="panelIzquierdo"> algoritmos</aside>
 
-        <button onClick={desordenar} disabled={ordenando} className="boton boton-desordenar">
-          Desordenar
-        </button>
-      </div>
-    </div>
-  );
-}
+  <section className="lienzo"> 
+
+    {arreglo.map((altura, index) => (
+      <div key={index} className="barra" style={{ height: `${(altura *100)/maximo}%` }} >{altura}</div>
+
+    ))}
+  </section>
+
+  <aside className="panelDerecho"> codigo</aside>
+  
+  </main>  
+
+
+<footer className="controles">
+  <button className="botonPildora" onClick={() => setArreglo(generador(15))}>
+    aleatorio
+  </button>
+  <button className="botonPildora"> ordenado</button>
+  <button className="botonPildora"> casi invertido</button>
+  <input type="text" className="arregloUsuario" placeholder="arreglo"/>
+</footer> 
+
+    
+    </div>);
+  }
