@@ -7,7 +7,8 @@ import { bubbleSort } from './algorithms/BubbleSort';
 import { selectionSort } from './algorithms/SelectionSort';
 import { insertionSort } from './algorithms/InsertionSort';
 import { gnomeSort } from './algorithms/GnomeSort';
- 
+import { exchangeSort } from './algorithms/ExchangeSort';
+
 const CANTIDAD = 15;
  
 const algoritmos: Record<string, { nombre: string; fn: SortGenerator }> = {
@@ -15,6 +16,7 @@ const algoritmos: Record<string, { nombre: string; fn: SortGenerator }> = {
   selection: { nombre: 'Selection Sort', fn: selectionSort },
   insertion: { nombre: 'Insertion Sort', fn: insertionSort },
   gnome: { nombre: 'Gnome Sort', fn: gnomeSort },
+  exchange: { nombre: 'Exchange Sort', fn: exchangeSort},
 };
  
 type AlgoritmoId = keyof typeof algoritmos;
