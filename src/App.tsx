@@ -1,12 +1,16 @@
 import './App.css';
 import { useState } from 'react';
-import { generador, generadorOrdenado, generadorCasiInvertido } from './generador';
+import { generador } from './generador';
 import { useSortAnimation } from './hooks/useSortAnimation';
 import type { SortGenerator } from './hooks/useSortAnimation';
 import { bubbleSort } from './algorithms/BubbleSort';
 import { selectionSort } from './algorithms/SelectionSort';
 import { insertionSort } from './algorithms/InsertionSort';
 import { gnomeSort } from './algorithms/GnomeSort';
+import { exchangeSort } from './algorithms/ExchangeSort';
+import { stoogeSort } from './algorithms/StoogeSort';
+import { quickSort } from './algorithms/QuickSort';
+import { mergeSort } from './algorithms/MergeSort';
 
 const CANTIDAD = 18;
 
@@ -17,20 +21,19 @@ const algoritmos: Record<string, { nombre: string; fn: SortGenerator }> = {
   gnome: { nombre: 'Gnome Sort', fn: gnomeSort },
 };
 
-/*VISALIZACION DE LOS ALGORITMOS DE ORDENAMIENTO*/
-
 const codigosAlgoritmos: Record<string, string[]> = {
   bubble: [
-  "for (let i = 0; i < n - 1; i++) {",
-  "  let huboIntercambio = false;",
-  "  for (let j = 0; j < n - 1 - i; j++) {",
-  "    if (arr[j] > arr[j + 1]) {",
-  "      [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];",
-  "      huboIntercambio = true;",
-  "    }",
-  "  }",
-  "}"
-],
+    "for (let i = 0; i < n - 1; i++) {",
+    "  let huboIntercambio = false;",
+    "  for (let j = 0; j < n - 1 - i; j++) {",
+    "    if (arr[j] > arr[j + 1]) {",
+    "      [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];",
+    "      huboIntercambio = true;",
+    "    }",
+    "  }",
+    "}"
+  ],
+
   selection: [
     "for (let i = 0; i < n - 1; i++) {",
     "  let min = i;",
@@ -40,6 +43,7 @@ const codigosAlgoritmos: Record<string, string[]> = {
     "  if (min !== i) [arr[i], arr[min]] = [arr[min], arr[i]];",
     "}"
   ],
+
   insertion: [
     "for (let i = 1; i < n; i++) {",
     "  let key = arr[i];",
@@ -51,6 +55,7 @@ const codigosAlgoritmos: Record<string, string[]> = {
     "  arr[j + 1] = key;",
     "}"
   ],
+
   gnome: [
     "let index = 0;",
     "while (index < n) {",
@@ -63,10 +68,6 @@ const codigosAlgoritmos: Record<string, string[]> = {
     "}"
   ]
 };
-
-
-
-
 
 
 type AlgoritmoId = keyof typeof algoritmos;
@@ -134,7 +135,6 @@ export default function App() {
               key={id}
               onClick={() => {
                 setAlgoritmoSeleccionado(id as AlgoritmoId);
-                // Mezclamos/desordenamos el arreglo actual al cambiar de algoritmo
                 const desordenado = [...arreglo].sort(() => Math.random() - 0.5);
                 reemplazarArreglo(desordenado);
               }}
@@ -178,12 +178,6 @@ export default function App() {
           })}
         </aside>
 
-
-
-
-
-
-
       </main>
 
       <footer className="controles">
@@ -194,6 +188,7 @@ export default function App() {
         >
           aleatorio
         </button>
+
         <button
           className="botonPildora"
           onClick={() => {
@@ -233,7 +228,7 @@ export default function App() {
         <div className="controlVelocidad">
           <label>velocidad</label>
           <div style={{ display: 'flex', gap: '8px' }}>
-            {[0.5, 1, 2, 4].map((mult) => (
+            {[0.5, 1, 4, 8, 16].map((mult) => (
               <button
                 key={mult}
                 className={`botonPildora ${velocidad === mult ? 'botonAlgoritmo-activo' : ''}`}
