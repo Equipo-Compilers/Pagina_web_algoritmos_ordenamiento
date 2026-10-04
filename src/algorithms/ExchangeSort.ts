@@ -1,29 +1,18 @@
 import type { SortStep } from "./types";
-
-export function* exchangeSort(array: number[]): Generator<SortStep> { 
-    
-const arr = [...array];
-  
+ 
+export function* exchangeSort(array: number[]): Generator<SortStep> {
+  const arr = [...array];
   const n = arr.length;
-
+ 
   for (let i = 0; i < n - 1; i++) {
-    let huboIntercambio = false;
-
-    for (let j = 0; j < n - 1 - i; j++) {
-      if (arr[j] > arr[j + 1]) {
-        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-        huboIntercambio = true;
-
-        yield { estadoActual: [...arr], indicesActivos: [j, j + 1] };
+    for (let j = i + 1; j < n; j++) {
+      if (arr[i] > arr[j]) {
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+        yield { estadoActual: [...arr], indicesActivos: [i, j] };
       }
     }
-
-    if (!huboIntercambio) break;
   }
-
+ 
   yield { estadoActual: [...arr], indicesActivos: [] };
-
-
-
-
 }
+ 

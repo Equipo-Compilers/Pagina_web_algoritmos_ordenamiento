@@ -11,8 +11,9 @@ import { exchangeSort } from './algorithms/ExchangeSort';
 import { stoogeSort } from './algorithms/StoogeSort';
 import { quickSort } from './algorithms/QuickSort';
 import { mergeSort } from './algorithms/MergeSort';
+import { codigosAlgoritmos } from './algorithms/CodigosAlgoritmos';
 
-const CANTIDAD = 15;
+const CANTIDAD_INICIAL = 18;
  
 const algoritmos: Record<string, { nombre: string; fn: SortGenerator }> = {
   bubble: { nombre: 'Bubble Sort', fn: bubbleSort },
@@ -25,75 +26,33 @@ const algoritmos: Record<string, { nombre: string; fn: SortGenerator }> = {
   merge: { nombre: 'Merge Sort', fn: mergeSort},
 };
 
-const codigosAlgoritmos: Record<string, string[]> = {
-  bubble: [
-    "for (let i = 0; i < n - 1; i++) {",
-    "  let huboIntercambio = false;",
-    "  for (let j = 0; j < n - 1 - i; j++) {",
-    "    if (arr[j] > arr[j + 1]) {",
-    "      [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];",
-    "      huboIntercambio = true;",
-    "    }",
-    "  }",
-    "}"
-  ],
-
-  selection: [
-    "for (let i = 0; i < n - 1; i++) {",
-    "  let min = i;",
-    "  for (let j = i + 1; j < n; j++) {",
-    "    if (arr[j] < arr[min]) min = j;",
-    "  }",
-    "  if (min !== i) [arr[i], arr[min]] = [arr[min], arr[i]];",
-    "}"
-  ],
-
-  insertion: [
-    "for (let i = 1; i < n; i++) {",
-    "  let key = arr[i];",
-    "  let j = i - 1;",
-    "  while (j >= 0 && arr[j] > key) {",
-    "    arr[j + 1] = arr[j];",
-    "    j--;",
-    "  }",
-    "  arr[j + 1] = key;",
-    "}"
-  ],
-
-  gnome: [
-    "let index = 0;",
-    "while (index < n) {",
-    "  if (index === 0 || arr[index] >= arr[index - 1]) {",
-    "    index++;",
-    "  } else {",
-    "    [arr[index], arr[index - 1]] = [arr[index - 1], arr[index]];",
-    "    index--;",
-    "  }",
-    "}"
-  ]
-};
-
-
 type AlgoritmoId = keyof typeof algoritmos;
 
 export default function App() {
   const [velocidad, setVelocidad] = useState<number>(1);
+  const [cantidad, setCantidad] = useState<number>(CANTIDAD_INICIAL);
   const [algoritmoSeleccionado, setAlgoritmoSeleccionado] = useState<AlgoritmoId>('bubble');
   const [valorInput, setValorInput] = useState('');
 
   const pausaMilisegundos = Math.round(150/velocidad);
 
-  
-  const { arreglo, indicesActivos, ordenando, iniciarAnimacion, detenerAnimacion, reemplazarArreglo,lineaActual } =
-    useSortAnimation(generador(CANTIDAD), pausaMilisegundos);
 
-  
+  const { arreglo, indicesActivos, ordenando, iniciarAnimacion, detenerAnimacion, reemplazarArreglo,lineaActual } =
+    useSortAnimation(generador(cantidad), pausaMilisegundos);
+
+
   const manejarArregloPersonalizado = () => {
     const numeros = valorInput.split(',').map((n) => parseInt(n.trim(), 10)).filter((n) => !isNaN(n));
     if (numeros.length > 0) {
       reemplazarArreglo(numeros);
       setValorInput('');
     }
+  };
+
+  const manejarCambioTamano = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const nuevaCantidad = Number(e.target.value);
+    setCantidad(nuevaCantidad);
+    reemplazarArreglo(generador(nuevaCantidad));
   };
 
   const maximo = Math.max(...arreglo);
@@ -123,7 +82,7 @@ export default function App() {
 
           <button
             className="botonPildora"
-            onClick={() => reemplazarArreglo(generador(CANTIDAD))}
+            onClick={() => reemplazarArreglo(generador(cantidad))}
             disabled={ordenando}
           >
             reset
@@ -187,21 +146,10 @@ export default function App() {
       <footer className="controles">
         <button
           className="botonPildora"
-          onClick={() => reemplazarArreglo(generador(CANTIDAD))}
+          onClick={() => reemplazarArreglo(generador(cantidad))}
           disabled={ordenando}
         >
           aleatorio
-        </button>
-
-        <button
-          className="botonPildora"
-          onClick={() => {
-            const ordenado = [...arreglo].sort((a, b) => a - b);
-            reemplazarArreglo(ordenado);
-          }}
-          disabled={ordenando}
-        >
-          ordenado
         </button>
 
        <button
@@ -219,6 +167,7 @@ export default function App() {
         >
           casi invertido
         </button>
+        
         <input
           type="text"
           className="arregloUsuario"
@@ -228,6 +177,18 @@ export default function App() {
           onKeyDown={(e) => e.key === 'Enter' && manejarArregloPersonalizado()}
           disabled={ordenando}
         />
+
+        <div className="controlVelocidad">
+          <label>tamaño del arreglo: {cantidad}</label>
+          <input
+            type="range"
+            min={5}
+            max={40}
+            value={cantidad}
+            onChange={manejarCambioTamano}
+            disabled={ordenando}
+          />
+        </div>
 
         <div className="controlVelocidad">
           <label>velocidad</label>

@@ -15,9 +15,9 @@ export function* stoogeSort(array: number[]): Generator<SortStep> {
     if (h - l + 1 > 2) {
       const t = Math.floor((h - l + 1) / 3);
 
-      yield* stoogeSortRec(l, h - t); // Primeros 2/3
-      yield* stoogeSortRec(l + t, h); // Últimos 2/3
-      yield* stoogeSortRec(l, h - t); // Primeros 2/3 de nuevo
+      yield* stoogeSortRec(l, h - t);
+      yield* stoogeSortRec(l + t, h);
+      yield* stoogeSortRec(l, h - t);
     }
   }
 
