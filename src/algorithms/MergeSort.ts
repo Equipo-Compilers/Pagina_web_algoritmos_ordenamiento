@@ -2,6 +2,8 @@ import type { SortStep } from "./types";
 
 export function* mergeSort(array: number[]): Generator<SortStep> {
   const arr = [...array];
+  let comparaciones = 0;
+  let intercambios = 0;
 
   function* mergeSortRec(inicio: number, fin: number): Generator<SortStep> {
     if (fin - inicio + 1 <= 1) return;
@@ -27,6 +29,7 @@ export function* mergeSort(array: number[]): Generator<SortStep> {
     let k = inicio;
 
     while (i < leftHalf.length && j < rightHalf.length) {
+      comparaciones++;
       if (leftHalf[i] < rightHalf[j]) {
         arr[k] = leftHalf[i];
         i++;
@@ -34,29 +37,32 @@ export function* mergeSort(array: number[]): Generator<SortStep> {
         arr[k] = rightHalf[j];
         j++;
       }
+      intercambios++;
 
-      yield { estadoActual: [...arr], indicesActivos: [k] };
+      yield { estadoActual: [...arr], indicesActivos: [k], comparaciones, intercambios };
       k++;
     }
 
     while (i < leftHalf.length) {
       arr[k] = leftHalf[i];
       i++;
+      intercambios++;
 
-      yield { estadoActual: [...arr], indicesActivos: [k] };
+      yield { estadoActual: [...arr], indicesActivos: [k], comparaciones, intercambios };
       k++;
     }
 
     while (j < rightHalf.length) {
       arr[k] = rightHalf[j];
       j++;
+      intercambios++;
 
-      yield { estadoActual: [...arr], indicesActivos: [k] };
+      yield { estadoActual: [...arr], indicesActivos: [k], comparaciones, intercambios };
       k++;
     }
   }
 
   yield* mergeSortRec(0, arr.length - 1);
 
-  yield { estadoActual: [...arr], indicesActivos: [] };
+  yield { estadoActual: [...arr], indicesActivos: [], comparaciones, intercambios };
 }

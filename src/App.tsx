@@ -12,6 +12,7 @@ import { stoogeSort } from './algorithms/StoogeSort';
 import { quickSort } from './algorithms/QuickSort';
 import { mergeSort } from './algorithms/MergeSort';
 import { codigosAlgoritmos } from './algorithms/CodigosAlgoritmos';
+import { complejidades } from './algorithms/Complejidades';
 
 const CANTIDAD_INICIAL = 18;
  
@@ -33,11 +34,12 @@ export default function App() {
   const [cantidad, setCantidad] = useState<number>(CANTIDAD_INICIAL);
   const [algoritmoSeleccionado, setAlgoritmoSeleccionado] = useState<AlgoritmoId>('bubble');
   const [valorInput, setValorInput] = useState('');
+  const [mostrarEstadisticas, setMostrarEstadisticas] = useState(false);
 
   const pausaMilisegundos = Math.round(150/velocidad);
 
 
-  const { arreglo, indicesActivos, ordenando, iniciarAnimacion, detenerAnimacion, reemplazarArreglo,lineaActual } =
+  const { arreglo, indicesActivos, ordenando, iniciarAnimacion, detenerAnimacion, reemplazarArreglo,lineaActual, estadisticas } =
     useSortAnimation(generador(cantidad), pausaMilisegundos);
 
 
@@ -110,6 +112,29 @@ export default function App() {
         </aside>
 
         <section className="lienzo">
+          <button
+            className="iconoEstadisticas"
+            onClick={() => setMostrarEstadisticas((v) => !v)}
+            title="Ver estadísticas"
+          >
+            📊
+          </button>
+
+          {mostrarEstadisticas && (
+            <div className="panelEstadisticas">
+              <div><strong>Comparaciones:</strong> {estadisticas.comparaciones}</div>
+              <div><strong>Intercambios:</strong> {estadisticas.intercambios}</div>
+              <div><strong>Pasos:</strong> {estadisticas.pasos}</div>
+              <div><strong>Tiempo:</strong> {estadisticas.tiempoMs.toFixed(0)} ms</div>
+              <div className="separadorEstadisticas" />
+              <div><strong>Complejidad teórica</strong></div>
+              <div>Mejor caso: {complejidades[algoritmoSeleccionado]?.mejor}</div>
+              <div>Promedio: {complejidades[algoritmoSeleccionado]?.promedio}</div>
+              <div>Peor caso: {complejidades[algoritmoSeleccionado]?.peor}</div>
+              <div>Espacio: {complejidades[algoritmoSeleccionado]?.espacio}</div>
+            </div>
+          )}
+
           {arreglo.map((altura, indice) => {
             const estaActivo = indicesActivos.includes(indice);
             return (
@@ -167,7 +192,6 @@ export default function App() {
         >
           casi invertido
         </button>
-        
         <input
           type="text"
           className="arregloUsuario"
