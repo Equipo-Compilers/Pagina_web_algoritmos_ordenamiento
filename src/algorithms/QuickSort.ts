@@ -1,0 +1,32 @@
+import type { SortStep } from "./types";
+
+export function* quickSort(array: number[]): Generator<SortStep> {
+  const arr = [...array];
+
+  function* quickSortRec(inicio: number, fin: number): Generator<SortStep> {
+    if (fin - inicio + 1 <= 1) return;
+
+    const sub = arr.slice(inicio, fin + 1);
+    const pivot = sub[Math.floor(sub.length / 2)];
+
+    const left = sub.filter((x) => x < pivot);
+    const middle = sub.filter((x) => x === pivot);
+    const right = sub.filter((x) => x > pivot);
+
+    const combinado = [...left, ...middle, ...right];
+    for (let k = 0; k < combinado.length; k++) {
+      if (arr[inicio + k] !== combinado[k]) {
+        arr[inicio + k] = combinado[k];
+
+        yield { estadoActual: [...arr], indicesActivos: [inicio + k] };
+      }
+    }
+
+    yield* quickSortRec(inicio, inicio + left.length - 1);
+    yield* quickSortRec(inicio + left.length + middle.length, fin);
+  }
+
+  yield* quickSortRec(0, arr.length - 1);
+
+  yield { estadoActual: [...arr], indicesActivos: [] };
+}
