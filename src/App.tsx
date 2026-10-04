@@ -13,7 +13,7 @@ import { quickSort } from './algorithms/QuickSort';
 import { mergeSort } from './algorithms/MergeSort';
 import { codigosAlgoritmos } from './algorithms/CodigosAlgoritmos';
 import { complejidades } from './algorithms/Complejidades';
-import { compararAlgoritmos, generarGraficaSVG } from './algorithms/Graficas';
+import logoImg from './Logo/logo.jpeg';
 
 const CANTIDAD_INICIAL = 18;
 
@@ -103,9 +103,9 @@ export default function App() {
   return (
     <div className="pantallaCompleta">
       <header className="cabecera">
-        <span className="logo">the compilers</span>
+       <img src={logoImg} alt="Logo" className="logo" />
 
-        <div className="grupoBotones">
+        <div  className="grupoBotones">
           <button
             className="botonPildora"
             onClick={() => iniciarAnimacion(algoritmos[algoritmoSeleccionado].fn)}
@@ -248,7 +248,7 @@ export default function App() {
           disabled={ordenando}
         />
 
-        <div className="controlVelocidad">
+        <div className="tamañoArreglo">
           <label>tamaño del arreglo: {cantidad}</label>
           <input
             type="range"
@@ -263,12 +263,13 @@ export default function App() {
         <div className="controlVelocidad">
           <label>velocidad</label>
           <div style={{ display: 'flex', gap: '8px' }}>
-            {[0.5, 1, 4, 8, 16].map((mult) => (
+            {[0.5, 1,2, 4, 8, 16].map((mult) => (
               <button
                 key={mult}
                 className={`botonPildora ${velocidad === mult ? 'botonAlgoritmo-activo' : ''}`}
                 onClick={() => setVelocidad(mult)}
-                style={{ padding: '8px 12px', minWidth: '45px', cursor: 'pointer' }}
+                
+                style={{ padding: '6px 14px', minWidth: '45px', cursor: 'pointer' }}
               >
                 {mult}x
               </button>
