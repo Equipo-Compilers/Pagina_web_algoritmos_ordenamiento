@@ -7,10 +7,6 @@ import { bubbleSort } from './algorithms/BubbleSort';
 import { selectionSort } from './algorithms/SelectionSort';
 import { insertionSort } from './algorithms/InsertionSort';
 import { gnomeSort } from './algorithms/GnomeSort';
-import { exchangeSort } from './algorithms/ExchangeSort';
-import { stoogeSort } from './algorithms/StoogeSort';
-import { quickSort } from './algorithms/QuickSort';
-import { mergeSort } from './algorithms/MergeSort';
 
 const CANTIDAD = 18;
 
