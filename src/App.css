@@ -255,3 +255,57 @@ transform:scale(1.5);
     background-color: rgba(233, 11, 11, 0.3);
     border-left: 3px solid #0be930;
 }
+
+/* ===== Modal de la gráfica comparativa ===== */
+
+.fondoModal {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 0, 40, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.modalGrafica {
+    background-color: #4a4a8a;
+    border-radius: 30px;
+    padding: 24px;
+    width: min(720px, 92vw);
+    max-height: 92vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    color: white;
+}
+
+.modalGrafica .botonPildora {
+    padding: 8px 30px;
+    cursor: pointer;
+}
+
+.selectoresGrafica {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.selectoresGrafica select {
+    padding: 8px 14px;
+    border-radius: 30px;
+    border: 2px solid #4a4a8a;
+    background-color: #2a0845;
+    color: white;
+    cursor: pointer;
+}
+
+.resumenGrafica {
+    font-weight: bold;
+    text-align: center;
+    margin: 0;
+}
