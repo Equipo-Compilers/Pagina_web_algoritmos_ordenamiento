@@ -2,8 +2,8 @@ import type { SortGenerator } from "../hooks/useSortAnimation";
 
 export interface PuntoMedicion {
   tamano: number;
-  tiempoA: number; // en milisegundos
-  tiempoB: number; // en milisegundos
+  tiempoA: number;
+  tiempoB: number;
 }
 
 export interface ResultadoComparacion {
@@ -15,16 +15,13 @@ export interface ResultadoComparacion {
   resumen: string;
 }
 
-// Mismos tamaños que la gráfica de Python
 const TAMANOS = [20, 40, 60, 80, 100];
-const TIEMPO_MINIMO_MS = 20; // cada medición dura al menos esto
+const TIEMPO_MINIMO_MS = 20;
 
 function generarArreglo(n: number): number[] {
   return Array.from({ length: n }, () => Math.floor(Math.random() * 100) + 1);
 }
 
-// Ejecuta el algoritmo muchas veces seguidas y devuelve el promedio por ejecución.
-// Así el redondeo del reloj del navegador deja de afectar la medición.
 function medir(algoritmo: SortGenerator, base: number[]): number {
   let ejecuciones = 0;
   const inicio = performance.now();
@@ -33,7 +30,6 @@ function medir(algoritmo: SortGenerator, base: number[]): number {
   do {
     const it = algoritmo(base);
     while (!it.next().done) {
-      // solo consumimos los pasos
     }
     ejecuciones++;
     fin = performance.now();
@@ -50,10 +46,8 @@ export function compararAlgoritmos(
   tamanos: number[] = TAMANOS
 ): ResultadoComparacion {
   const puntos: PuntoMedicion[] = tamanos.map((tamano) => {
-    // Un solo arreglo por tamaño, el mismo para los dos algoritmos
     const base = generarArreglo(tamano);
 
-    // Calentamiento para que la primera medición no salga inflada
     medir(algA, base);
     medir(algB, base);
 
@@ -64,7 +58,6 @@ export function compararAlgoritmos(
     };
   });
 
-  // Conclusión con base en el tamaño más grande
   const ultimo = puntos[puntos.length - 1];
   const aGana = ultimo.tiempoA <= ultimo.tiempoB;
   const rapido = Math.min(ultimo.tiempoA, ultimo.tiempoB);
@@ -81,7 +74,6 @@ export function compararAlgoritmos(
   return { nombreA, nombreB, puntos, ganador, veces, resumen };
 }
 
-// Paso "bonito" para el eje Y (1, 2 o 5 por una potencia de 10)
 function pasoBonito(maximo: number, divisiones: number): number {
   const crudo = maximo / divisiones;
   const magnitud = Math.pow(10, Math.floor(Math.log10(crudo)));
@@ -90,7 +82,6 @@ function pasoBonito(maximo: number, divisiones: number): number {
   return factor * magnitud;
 }
 
-// Devuelve la gráfica como texto SVG, al estilo de la gráfica de clase
 export function generarGraficaSVG(resultado: ResultadoComparacion): string {
   const { puntos, nombreA, nombreB } = resultado;
 
@@ -100,16 +91,13 @@ export function generarGraficaSVG(resultado: ResultadoComparacion): string {
   const areaAncho = ancho - m.izq - m.der;
   const areaAlto = alto - m.arriba - m.abajo;
 
-  // Colores por defecto de matplotlib
   const colorA = "#1f77b4";
   const colorB = "#ff7f0e";
 
-  // Tiempos en segundos, como en la gráfica de Python
   const datosA = puntos.map((p) => p.tiempoA / 1000);
   const datosB = puntos.map((p) => p.tiempoB / 1000);
   const maxDato = Math.max(...datosA, ...datosB, 1e-9);
 
-  // Márgenes del 5% como matplotlib
   const tamMin = puntos[0].tamano;
   const tamMax = puntos[puntos.length - 1].tamano;
   const margenX = (tamMax - tamMin) * 0.05 || 1;
@@ -124,7 +112,6 @@ export function generarGraficaSVG(resultado: ResultadoComparacion): string {
   const x = (t: number) => m.izq + ((t - xMin) / (xMax - xMin)) * areaAncho;
   const y = (v: number) => m.arriba + areaAlto - ((v - yMin) / (yMax - yMin)) * areaAlto;
 
-  // Cuadrícula y marcas del eje Y
   let cuadriculaY = "";
   for (let v = 0; v <= yMax; v += paso) {
     cuadriculaY += `
@@ -133,7 +120,6 @@ export function generarGraficaSVG(resultado: ResultadoComparacion): string {
       <text x="${m.izq - 9}" y="${y(v) + 4}" text-anchor="end" fill="#000" font-size="11">${v.toFixed(decimales)}</text>`;
   }
 
-  // Cuadrícula y marcas del eje X, cada 10 elementos
   let cuadriculaX = "";
   for (let t = Math.ceil(tamMin / 10) * 10; t <= tamMax; t += 10) {
     cuadriculaX += `
@@ -175,4 +161,3 @@ export function generarGraficaSVG(resultado: ResultadoComparacion): string {
   </g>
 </svg>`;
 }
-

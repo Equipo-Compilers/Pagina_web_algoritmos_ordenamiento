@@ -13,6 +13,8 @@ import { quickSort } from './algorithms/QuickSort';
 import { mergeSort } from './algorithms/MergeSort';
 import { codigosAlgoritmos } from './algorithms/CodigosAlgoritmos';
 import { complejidades } from './algorithms/Complejidades';
+import { compararAlgoritmos, generarGraficaSVG } from './algorithms/Graficas';
+import DualComparision from './comparations/DualComparison';
 import logoImg from './Logo/logo.jpeg';
 
 const CANTIDAD_INICIAL = 18;
@@ -37,8 +39,8 @@ export default function App() {
   const [valorInput, setValorInput] = useState('');
   const [mostrarEstadisticas, setMostrarEstadisticas] = useState(false);
 
-  // Estados de la gráfica comparativa
   const [mostrarGrafica, setMostrarGrafica] = useState(false);
+  const [mostrarComparacion, setMostrarComparacion] = useState(false);
   const [algoA, setAlgoA] = useState<AlgoritmoId>('bubble');
   const [algoB, setAlgoB] = useState<AlgoritmoId>('quick');
   const [graficaSVG, setGraficaSVG] = useState<string | null>(null);
@@ -79,10 +81,9 @@ export default function App() {
     setCalculando(true);
     setGraficaSVG(null);
 
-    // El setTimeout deja que se pinte "calculando..." antes de medir
+
     setTimeout(() => {
       const usaStooge = algoA === 'stooge' || algoB === 'stooge';
-      // Stooge Sort es muy lento, por eso se usan tamaños menores con él
       const tamanos = usaStooge ? [10, 20, 30, 40, 50] : undefined;
 
       const resultado = compararAlgoritmos(
@@ -103,9 +104,9 @@ export default function App() {
   return (
     <div className="pantallaCompleta">
       <header className="cabecera">
-       <img src={logoImg} alt="Logo" className="logo" />
+        <img src={logoImg} alt="Logo" className="logo" />
 
-        <div  className="grupoBotones">
+        <div className="grupoBotones">
           <button
             className="botonPildora"
             onClick={() => iniciarAnimacion(algoritmos[algoritmoSeleccionado].fn)}
@@ -136,6 +137,14 @@ export default function App() {
             disabled={ordenando}
           >
             graphic
+          </button>
+
+          <button
+            className="botonPildora"
+            onClick={() => setMostrarComparacion(true)}
+            disabled={ordenando}
+          >
+            comparar
           </button>
         </div>
       </header>
@@ -263,13 +272,12 @@ export default function App() {
         <div className="controlVelocidad">
           <label>velocidad</label>
           <div style={{ display: 'flex', gap: '8px' }}>
-            {[0.5, 1,2, 4, 8, 16].map((mult) => (
+            {[0.5, 1, 2, 4, 8, 16].map((mult) => (
               <button
                 key={mult}
                 className={`botonPildora ${velocidad === mult ? 'botonAlgoritmo-activo' : ''}`}
                 onClick={() => setVelocidad(mult)}
-                
-                style={{ padding: '6px 14px', minWidth: '45px', cursor: 'pointer' }}
+                style={{ padding: '8px 12px', minWidth: '45px', cursor: 'pointer' }}
               >
                 {mult}x
               </button>
@@ -318,6 +326,14 @@ export default function App() {
             </button>
           </div>
         </div>
+      )}
+
+      {mostrarComparacion && (
+        <DualComparision
+          algoritmos={algoritmos}
+          cantidad={cantidad}
+          onCerrar={() => setMostrarComparacion(false)}
+        />
       )}
     </div>
   );

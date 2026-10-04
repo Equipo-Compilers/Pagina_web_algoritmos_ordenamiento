@@ -1,0 +1,177 @@
+.fondoComparacion {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+}
+
+.modalComparacion {
+    background: linear-gradient(to bottom, #1a1a24, #2d0f45);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 24px;
+    padding: 24px 30px;
+    width: min(95vw, 1100px);
+    max-height: 90vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    color: white;
+    font-family: system-ui, sans-serif;
+}
+
+.encabezadoComparacion {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.tituloComparacion {
+    margin: 0;
+    font-size: 1.3em;
+}
+
+.botonCerrarComparacion {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2em;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.botonCerrarComparacion:hover {
+    color: #5dbfec;
+}
+
+.avisoComparacion {
+    text-align: center;
+    color: #f0c419;
+    margin: 0;
+}
+
+.columnasComparacion {
+    display: flex;
+    align-items: stretch;
+    gap: 16px;
+}
+
+.vsComparacion {
+    align-self: center;
+    font-weight: bold;
+    font-size: 1.2em;
+    color: #15c4a6;
+    flex-shrink: 0;
+}
+
+.columnaComparacion {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.selectComparacion {
+    background: linear-gradient(to bottom, #7319a7, #b67fe4);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
+    padding: 8px 16px;
+    cursor: pointer;
+    color-scheme: dark;
+}
+
+.selectComparacion option {
+    background-color: #2d0f45;
+    color: white;
+}
+
+.lienzoComparacion {
+    position: relative;
+    height: 220px;
+    background: linear-gradient(to bottom, #050505, #8f39d4);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.lienzoComparacion::-webkit-scrollbar {
+    display: none;
+}
+
+.barraComparacion {
+    flex: 1 1 0;
+    min-width: 3px;
+    max-width: 30px;
+    background-color: #bc78e4;
+    border-radius: 3px 3px 0 0;
+    text-align: center;
+    overflow: hidden;
+    font-size: clamp(0.45em, 1.2vw, 0.85em);
+    color: white;
+    transition: height 0.1s ease, background-color 0.1s ease;
+}
+
+.barraComparacion-activa {
+    background-color: #15c4a6;
+}
+
+.estadisticasComparacion {
+    background-color: #b10dda30;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 0.85em;
+    line-height: 1.6;
+}
+
+.separadorComparacion {
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    margin: 6px 0;
+}
+
+.controlesComparacion {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+.botonComparacion {
+    background: linear-gradient(to bottom, #7319a7, #b67fe4);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 10px 40px;
+    cursor: pointer;
+}
+
+.botonComparacion-iniciar {
+    background: linear-gradient(to bottom, #15c4a6, #7fcce4);
+    font-weight: bold;
+}
+
+.botonComparacion:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+@media (max-width: 700px) {
+    .columnasComparacion {
+        flex-direction: column;
+    }
+    .vsComparacion {
+        align-self: center;
+    }
+}

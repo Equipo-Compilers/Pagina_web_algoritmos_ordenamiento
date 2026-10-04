@@ -12,6 +12,7 @@
     gap: 20px;
     padding: 5px 40px;
 }
+
 .logo{
     width: 8%   ;
     height: auto;
@@ -50,11 +51,19 @@
     padding: 30px;
     border-radius: 30px;
     border: 1px solid rgba(255, 255, 255, 0.541);
-      display: flex;
+    display: flex;
     flex-direction: column;
     gap: 5%;
     margin-left: .1%;
+    overflow-y: auto;
+}
 
+.panelIzquierdo::-webkit-scrollbar {
+    display: none;
+}
+.panelIzquierdo {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 .lienzo{
@@ -67,8 +76,14 @@
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    gap: 6px;
+    gap: 3px;
     overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.lienzo::-webkit-scrollbar {
+    display: none;
 }
 
 .iconoEstadisticas {
@@ -125,7 +140,7 @@
 
 .barra{
     flex: 1 1 0;
-    min-width: 15px;
+    min-width: 4px;
     max-width: 50px;
     background-color:  #bc78e4;
     border-radius: 5px 5px 0px 0px;
@@ -133,8 +148,9 @@
     border-width: 2px;
     border-style: line;
     text-align: center;
+    overflow: hidden;
+    font-size: clamp(0.5em, 1.5vw, 1em);
     transition: height 0.1s ease, background-color 0.1 s ease;
-    
 }
 
 .barra-activa{
@@ -142,9 +158,8 @@
     border-color: #5dcbec;
 }
 
-
 .botonAlgoritmo{
-     background: linear-gradient(to bottom, #ad47e9, #b67fe4);
+    background: linear-gradient(to bottom, #ad47e9, #b67fe4);
     color: white;
     border: none;
     border-radius: 40px;
@@ -154,7 +169,7 @@
 }
 
 .botonAlgoritmo-activo{
-     background: linear-gradient(to bottom, #15c4a6, #7fcce4);
+    background: linear-gradient(to bottom, #15c4a6, #7fcce4);
     font-weight: bold;
     font-size: 1.2em;
 }
@@ -174,19 +189,19 @@
 }
 
 .botonPildora{
-   background: linear-gradient(to bottom, #7319a7, #b67fe4);
+    background: linear-gradient(to bottom, #7319a7, #b67fe4);
     padding: 8px 70px 8px 70px;
     border-radius: 30px;
     border-color: #4a4a8a;
     color: white;
     gap: 20px;
-   margin-bottom: 1.5%;
-   margin-top: 1%;
-   cursor: pointer;
+    margin-bottom: 1.5%;
+    margin-top: 1%;
+    cursor: pointer;
 }
 
 .arregloUsuario{
-  background: linear-gradient(to bottom, #7319a7, #b67fe4);
+    background: linear-gradient(to bottom, #7319a7, #b67fe4);
     color: white;
     border-radius: 30px;
     border:2px solid #cacada;
@@ -205,11 +220,9 @@
     margin-bottom: 1.5%;
 }
 
-
-
 .panelDerecho{
     width: 320px;
-   background: linear-gradient(to bottom, #050505, #8f39d4);
+    background: linear-gradient(to bottom, #050505, #8f39d4);
     padding: 20px;
     border-radius: 30px;
     border: 1px solid rgba(255, 255, 255, 0.541);
@@ -217,7 +230,6 @@
 }
 
 .panelDerecho-codigo {
-
     font-family: monospace;
     font-size: 1.05em;
     display: flex;
@@ -255,24 +267,102 @@
     gap: 8px;
     margin-bottom: 1.5%;
 }
+
 .tamañoArreglo label[type="range"]{
    -webkit-appearance: none;
     appearance: none;
     font-size: medium;
-    }
+}
 
-    .tamañoArreglo input[type="range"]{
+.tamañoArreglo input[type="range"]{
     -webkit-appearance: none;
     appearance: none;
-   background: linear-gradient(to bottom, #7319a7, #b67fe4);
+    background: linear-gradient(to bottom, #7319a7, #b67fe4);
     width: 100%;
     height: 10%;
     border-radius: 20%;
     cursor: grab;
 
 }
-.tamañoArreglo input:disabled[type="range"]{
- opacity: 0.5;
-    cursor: NOT-ALLOWED 
 
+.tamañoArreglo input:disabled[type="range"]{
+    opacity: 0.5;
+    cursor: NOT-ALLOWED 
+}
+
+.tamañoArreglo input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 20%;
+    background-color: black;
+    cursor: grab;
+}
+
+.tamañoArreglo input[type="range"]::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border: none;
+    border-radius: 20%;
+    background-color: black;
+    cursor: grab;
+}
+
+.fondoModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.modalGrafica {
+    background: linear-gradient(to bottom, #1a1a24, #2d0f45);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 24px;
+    padding: 30px;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    color: white;
+}
+
+.selectoresGrafica {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.selectoresGrafica select {
+    background: linear-gradient(to bottom, #7319a7, #b67fe4);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
+    padding: 8px 16px;
+    cursor: pointer;
+    color-scheme: dark;
+}
+
+.selectoresGrafica select option {
+    background-color: #2d0f45;
+    color: white;
+}
+
+.resumenGrafica {
+    text-align: center;
+    font-size: 0.95em;
+    color: #e0cdf5;
+    max-width: 600px;
 }
