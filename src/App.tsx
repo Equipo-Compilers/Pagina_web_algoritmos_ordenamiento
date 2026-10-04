@@ -16,16 +16,16 @@ import { complejidades } from './algorithms/Complejidades';
 import logoImg from './Logo/logo.jpeg';
 
 const CANTIDAD_INICIAL = 18;
- 
+
 const algoritmos: Record<string, { nombre: string; fn: SortGenerator }> = {
   bubble: { nombre: 'Bubble Sort', fn: bubbleSort },
   selection: { nombre: 'Selection Sort', fn: selectionSort },
   insertion: { nombre: 'Insertion Sort', fn: insertionSort },
   gnome: { nombre: 'Gnome Sort', fn: gnomeSort },
-  exchange: { nombre: 'Exchange Sort', fn: exchangeSort},
-  stooge: { nombre: 'Stooge Sort', fn: stoogeSort},
-  quick: { nombre: 'Quick Sort', fn: quickSort},
-  merge: { nombre: 'Merge Sort', fn: mergeSort},
+  exchange: { nombre: 'Exchange Sort', fn: exchangeSort },
+  stooge: { nombre: 'Stooge Sort', fn: stoogeSort },
+  quick: { nombre: 'Quick Sort', fn: quickSort },
+  merge: { nombre: 'Merge Sort', fn: mergeSort },
 };
 
 type AlgoritmoId = keyof typeof algoritmos;
@@ -37,15 +37,32 @@ export default function App() {
   const [valorInput, setValorInput] = useState('');
   const [mostrarEstadisticas, setMostrarEstadisticas] = useState(false);
 
-  const pausaMilisegundos = Math.round(150/velocidad);
+  // Estados de la gráfica comparativa
+  const [mostrarGrafica, setMostrarGrafica] = useState(false);
+  const [algoA, setAlgoA] = useState<AlgoritmoId>('bubble');
+  const [algoB, setAlgoB] = useState<AlgoritmoId>('quick');
+  const [graficaSVG, setGraficaSVG] = useState<string | null>(null);
+  const [resumen, setResumen] = useState('');
+  const [calculando, setCalculando] = useState(false);
 
+  const pausaMilisegundos = Math.round(150 / velocidad);
 
-  const { arreglo, indicesActivos, ordenando, iniciarAnimacion, detenerAnimacion, reemplazarArreglo,lineaActual, estadisticas } =
-    useSortAnimation(generador(cantidad), pausaMilisegundos);
-
+  const {
+    arreglo,
+    indicesActivos,
+    ordenando,
+    iniciarAnimacion,
+    detenerAnimacion,
+    reemplazarArreglo,
+    lineaActual,
+    estadisticas,
+  } = useSortAnimation(generador(cantidad), pausaMilisegundos);
 
   const manejarArregloPersonalizado = () => {
-    const numeros = valorInput.split(',').map((n) => parseInt(n.trim(), 10)).filter((n) => !isNaN(n));
+    const numeros = valorInput
+      .split(',')
+      .map((n) => parseInt(n.trim(), 10))
+      .filter((n) => !isNaN(n));
     if (numeros.length > 0) {
       reemplazarArreglo(numeros);
       setValorInput('');
@@ -56,6 +73,29 @@ export default function App() {
     const nuevaCantidad = Number(e.target.value);
     setCantidad(nuevaCantidad);
     reemplazarArreglo(generador(nuevaCantidad));
+  };
+
+  const manejarGraficar = () => {
+    setCalculando(true);
+    setGraficaSVG(null);
+
+    // El setTimeout deja que se pinte "calculando..." antes de medir
+    setTimeout(() => {
+      const usaStooge = algoA === 'stooge' || algoB === 'stooge';
+      // Stooge Sort es muy lento, por eso se usan tamaños menores con él
+      const tamanos = usaStooge ? [10, 20, 30, 40, 50] : undefined;
+
+      const resultado = compararAlgoritmos(
+        algoritmos[algoA].nombre,
+        algoritmos[algoA].fn,
+        algoritmos[algoB].nombre,
+        algoritmos[algoB].fn,
+        tamanos
+      );
+      setGraficaSVG(generarGraficaSVG(resultado));
+      setResumen(resultado.resumen);
+      setCalculando(false);
+    }, 50);
   };
 
   const maximo = Math.max(...arreglo);
@@ -73,8 +113,7 @@ export default function App() {
           >
             {ordenando ? 'ordenando...' : 'start'}
           </button>
-          
-          
+
           <button
             className="botonPildora"
             onClick={detenerAnimacion}
@@ -90,7 +129,14 @@ export default function App() {
           >
             reset
           </button>
-          <button className="botonPildora">graphic</button>
+
+          <button
+            className="botonPildora"
+            onClick={() => setMostrarGrafica(true)}
+            disabled={ordenando}
+          >
+            graphic
+          </button>
         </div>
       </header>
 
@@ -150,15 +196,14 @@ export default function App() {
           })}
         </section>
 
-        
         <aside className="panelDerecho panelDerecho-codigo">
           <div className="codigoTitulo">Código en ejecución</div>
-          {(codigosAlgoritmos[algoritmoSeleccionado] || ["Selecciona un algoritmo"]).map((lineaTexto, idx) => {
+          {(codigosAlgoritmos[algoritmoSeleccionado] || ['Selecciona un algoritmo']).map((lineaTexto, idx) => {
             const numeroLineaReal = idx + 1;
-            const esLineaActiva = lineaActual === numeroLineaReal; 
+            const esLineaActiva = lineaActual === numeroLineaReal;
             return (
-              <div 
-                key={idx} 
+              <div
+                key={idx}
                 className={`lineaCodigo ${esLineaActiva ? 'lineaActiva' : ''}`}
               >
                 {lineaTexto}
@@ -166,7 +211,6 @@ export default function App() {
             );
           })}
         </aside>
-
       </main>
 
       <footer className="controles">
@@ -178,7 +222,7 @@ export default function App() {
           aleatorio
         </button>
 
-       <button
+        <button
           className="botonPildora"
           onClick={() => {
             const invertido = [...arreglo].sort((a, b) => b - a);
@@ -193,6 +237,7 @@ export default function App() {
         >
           casi invertido
         </button>
+
         <input
           type="text"
           className="arregloUsuario"
@@ -231,8 +276,49 @@ export default function App() {
             ))}
           </div>
         </div>
-
       </footer>
+
+      {mostrarGrafica && (
+        <div className="fondoModal" onClick={() => setMostrarGrafica(false)}>
+          <div className="modalGrafica" onClick={(e) => e.stopPropagation()}>
+            <div className="selectoresGrafica">
+              <select value={algoA} onChange={(e) => setAlgoA(e.target.value as AlgoritmoId)}>
+                {Object.entries(algoritmos).map(([id, a]) => (
+                  <option key={id} value={id}>{a.nombre}</option>
+                ))}
+              </select>
+              <span>vs</span>
+              <select value={algoB} onChange={(e) => setAlgoB(e.target.value as AlgoritmoId)}>
+                {Object.entries(algoritmos).map(([id, a]) => (
+                  <option key={id} value={id}>{a.nombre}</option>
+                ))}
+              </select>
+              <button
+                className="botonPildora"
+                onClick={manejarGraficar}
+                disabled={calculando || algoA === algoB}
+              >
+                {calculando ? 'calculando...' : 'graficar'}
+              </button>
+            </div>
+
+            {algoA === algoB && (
+              <p className="resumenGrafica">Elige dos algoritmos distintos.</p>
+            )}
+
+            {graficaSVG && (
+              <>
+                <div style={{ width: '100%' }} dangerouslySetInnerHTML={{ __html: graficaSVG }} />
+                <p className="resumenGrafica">{resumen}</p>
+              </>
+            )}
+
+            <button className="botonPildora" onClick={() => setMostrarGrafica(false)}>
+              cerrar
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
