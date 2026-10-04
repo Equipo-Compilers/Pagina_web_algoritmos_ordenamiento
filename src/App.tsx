@@ -7,14 +7,22 @@ import { bubbleSort } from './algorithms/BubbleSort';
 import { selectionSort } from './algorithms/SelectionSort';
 import { insertionSort } from './algorithms/InsertionSort';
 import { gnomeSort } from './algorithms/GnomeSort';
+import { exchangeSort } from './algorithms/ExchangeSort';
+import { stoogeSort } from './algorithms/StoogeSort';
+import { quickSort } from './algorithms/QuickSort';
+import { mergeSort } from './algorithms/MergeSort';
 
-const CANTIDAD = 18;
-
+const CANTIDAD = 15;
+ 
 const algoritmos: Record<string, { nombre: string; fn: SortGenerator }> = {
   bubble: { nombre: 'Bubble Sort', fn: bubbleSort },
   selection: { nombre: 'Selection Sort', fn: selectionSort },
   insertion: { nombre: 'Insertion Sort', fn: insertionSort },
   gnome: { nombre: 'Gnome Sort', fn: gnomeSort },
+  exchange: { nombre: 'Exchange Sort', fn: exchangeSort},
+  stooge: { nombre: 'Stooge Sort', fn: stoogeSort},
+  quick: { nombre: 'Quick Sort', fn: quickSort},
+  merge: { nombre: 'Merge Sort', fn: mergeSort},
 };
 
 const codigosAlgoritmos: Record<string, string[]> = {
