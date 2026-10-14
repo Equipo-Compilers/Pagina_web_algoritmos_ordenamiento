@@ -366,3 +366,98 @@
     color: #e0cdf5;
     max-width: 600px;
 }
+
+
+
+/*--  ADAPTACIÓN PARA TELÉFONOS MÓVILES--*/  
+    @media (max-width: 800px) {
+        .pantallaCompleta {
+            height: auto;
+            min-height: 100vh;
+        }
+
+        .cabecera {
+            flex-direction: column;
+            padding: 0px 10px;
+            gap: 15px;
+        }
+
+    
+        .logo {
+            width: 90px;
+            mix-blend-mode: screen;
+            object-fit: contain;
+
+        }
+
+        .grupoBotones {
+            margin-right: 0;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .areaCentral {
+            flex-direction: column;
+            padding: 10px;
+        }
+
+        .panelIzquierdo,
+        .panelDerecho {
+            width: 100%;
+            margin: 0;
+        
+            font-size: small;
+        }
+        
+        .panelIzquierdo {
+            flex-direction: row; 
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+
+
+
+ .lienzo {
+        height: 30px;
+        min-height: 320px;
+        
+        
+        padding: 2px 5px 5px 5px; 
+    }
+
+    .barra {
+        min-width: 15px; /* Ancho ajustado para que quepan de 2 a 3 dígitos */
+        font-size: 0.75rem; /* Tamaño de letra compacto para móviles */
+        border-width: 1px;
+        
+        padding-bottom: 2px; 
+        
+        min-height: 18px; 
+    }
+
+    
+        .botonPildora {
+            padding: 2px 8px;
+        }
+
+        .controles {
+            flex-wrap: wrap;
+            padding: 15px 10px;
+            gap: 15px;
+        }
+
+        .arregloUsuario, .tamañoArreglo {
+            width: 70%;
+        }
+
+        .panelEstadisticas {
+            right: auto;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+        }
+        
+    }
