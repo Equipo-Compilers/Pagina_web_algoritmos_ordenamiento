@@ -5,10 +5,17 @@ import GreddyInterface from "./Greedy_Algorithms/GreedyInterface";
 
 function Inicio() {
     return (
-        <div className="container">
+      
+        <div className="body">
+          <header className="cabecera">
+             <h1>Algorithmview</h1>
+            <img src="../\Pagina_web_algoritmos_ordenamiento\Pagina_web_algoritmos_ordenamiento\src\Logo" alt="logo" className="logo"/>
+           
+
+          </header>
             <div className="enlaces">
-                <Link to="/algoritmos">Ir a visualizar algoritmos</Link>
-                <Link to="/algoritmos_voracez">Ir a algoritmos voracez</Link>
+               <div className="contenedorEnlaces"><Link to="/algoritmos">Ir a visualizar algoritmos</Link></div> 
+               <div className="contenedorEnlaces"> <Link to="/algoritmos_voracez">Ir a algoritmos voracez</Link></div>
             </div>
         </div>
     );
