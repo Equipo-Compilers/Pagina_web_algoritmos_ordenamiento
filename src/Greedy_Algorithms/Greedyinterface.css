@@ -1,51 +1,122 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 .huffman-page {
-   min-height: 100vh;
-   padding: 24px 20px;
-   background-color: #111827;
-   color: white;
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   gap: 16px;
+    min-height: 100vh;
+    padding: 24px 20px;
+    background: linear-gradient(to bottom, #131318 0%, #1a0b2e 40%, #5a1a9a 100%);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
 }
 
 .huffman-back {
-   align-self: flex-start;
-   color: #d8b4fe;
-   text-decoration: none;
+    align-self: flex-start;
+    color: #d8b4fe;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.2s ease;
+}
+
+.huffman-back:hover {
+    color: #ffffff;
 }
 
 .huffman-section {
-   width: 100%;
-   max-width: 600px;
-   display: flex;
-   flex-direction: column;
-   gap: 12px;
-   padding: 16px;
-   border-radius: 12px;
-   background: linear-gradient(to bottom, #a359b9, #2e073d);
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 12px;
+    background: linear-gradient(to bottom, #c770e2, #2e073d);
 }
 
+.huffman-section h2 {
+    font-size: 1.2em;
+    color: #ffffff;
+}
+
+
 .huffman-section button {
-   background-color: #52B773;
-   color: white;
-   border: none;
-   padding: 8px 14px;
-   border-radius: 6px;
-   font-weight: bold;
-   cursor: pointer;
+    background-color: #590be9;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    align-self: flex-start;
+}
+
+
+.huffman-section button:hover {
+    background-color: #3fe0cc;
+    
+}
+
+.huffman-section button:active {
+    transform: scale(.97);
+    background-color: #a79aac;
+}
+
+.huffman-section input[type="file"] {
+    color: white;
+    background: rgba(13, 78, 218, 0.2);
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px dashed rgba(233, 229, 229, 0.4);
+    cursor: pointer;
+}
+
+.huffman-section input[type="file"]::file-selector-button {
+    background: #590be9;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    margin-right: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.huffman-section input[type="file"]::file-selector-button:hover {
+    background:  #3fe0cc;
 }
 
 .huffman-results {
-   display: flex;
-   flex-direction: column;
-   gap: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.308);
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 8px;
 }
 
 .huffman-warning {
-   color: #fde68a;
+    color: #e6e20d;
+    font-size: 0.9em;
 }
 
 .huffman-error {
-   color: #fca5a5;
+    color: #fca5a5;
+    background: rgba(239, 68, 68, 0.2);
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ef4444;
+}
+
+/* Adaptación para pantallas pequeñas */
+@media (max-width: 600px) {
+    .huffman-section button {
+        width: 100%;
+    }
 }
