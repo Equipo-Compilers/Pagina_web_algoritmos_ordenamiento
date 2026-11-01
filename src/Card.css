@@ -17,12 +17,14 @@
     border-radius: 12px;
     overflow: hidden;
     transition: all 0.3s ease;
+    margin-bottom: 20px;
 }
 
 .card:hover {
-    background-color: #f16cf1;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(187, 65, 228, 0.856);
+    background-color: #da09da;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(191, 114, 216, 0.856);
+    transform: scale(1.02);
 }
 
 .card:hover .card-header h3 {
@@ -61,7 +63,7 @@
 }
 
 .btn-training {
-    background-color: #52B773;
+    background-color: #52b757;
     color: white;
     border: none;
     padding: 4px 10px;
@@ -76,7 +78,7 @@
 }
 
 .tag {
-    background-color: #a0a0a0;
+    background-color: #9e9b9b;
     color: white;
     padding: 2px 6px;
     font-size: 12px;
@@ -104,7 +106,7 @@
 
 @keyframes intercambiar {
     0% { transform: translateY(0); }
-    100% { height: 80%; transform: translateY(-10px); background-color: #e0f2f1; }
+    100% { height: 80%; transform: translateY(-10px); background-color: #d9faf8; }
 }
 
 .anim-arbol {
@@ -117,9 +119,9 @@
 .nodo {
     width: 28px;
     height: 28px;
-    background-color: white;
+    background-color: rgb(23, 223, 189);
     border-radius: 50%;
-    animation: aparecerNodo 2.5s infinite;
+    animation: aparecerNodo 1.5s infinite;
 }
 
 .ramas {
@@ -160,7 +162,7 @@
 }
 
 @keyframes comprimirDatos {
-    0%, 20% { width: 140px; color: #333; }
-    50%, 70% { width: 45px; color: transparent; background-color: #fff6a1; }
+    0%, 20% { width: 140px; color: #000000; }
+    50%, 70% { width: 45px; color: transparent; background-color: #b5f1ec; }
     100% { width: 140px; color: #333; }
 }
