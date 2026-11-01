@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Card from "./Card";
 import AlgorithmInterface from "./Sort_Algorithms/AlgorithmInterface";
 import GreedyInterface from "./Greedy_Algorithms/GreedyInterface";
-import HoffmanInterface from "./Greedy_Algorithms/HoffmanInterface";
+import HuffmanInterface from "./Greedy_Algorithms/HuffmanInterface";
 
 function Home() {
     return (
@@ -46,7 +46,7 @@ export default function App() {
         <Route path="/Pagina_web_algoritmos_ordenamiento_tecnica_voraz/" element={<Home />} />
         <Route path="/" element={<Home />} />
         <Route path="/algoritmos" element={<AlgorithmInterface />} />
-        <Route path="/algoritmo_huffman" element={<HoffmanInterface/>} />
+        <Route path="/algoritmo_huffman" element={<HuffmanInterface/>} />
         <Route path="/algoritmos_voracez" element={<GreedyInterface />} />
       </Routes>
     </BrowserRouter>
