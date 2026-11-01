@@ -1,20 +1,51 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;    
- }
+.huffman-page {
+   min-height: 100vh;
+   padding: 24px 20px;
+   background-color: #111827;
+   color: white;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: 16px;
+}
 
- .container{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #000000;
- }
+.huffman-back {
+   align-self: flex-start;
+   color: #d8b4fe;
+   text-decoration: none;
+}
 
- .Veanlo {
-    display: grid;
-    place-items: center;
-    height: 100vh;
-    color: aliceblue;
+.huffman-section {
+   width: 100%;
+   max-width: 600px;
+   display: flex;
+   flex-direction: column;
+   gap: 12px;
+   padding: 16px;
+   border-radius: 12px;
+   background: linear-gradient(to bottom, #a359b9, #2e073d);
+}
+
+.huffman-section button {
+   background-color: #52B773;
+   color: white;
+   border: none;
+   padding: 8px 14px;
+   border-radius: 6px;
+   font-weight: bold;
+   cursor: pointer;
+}
+
+.huffman-results {
+   display: flex;
+   flex-direction: column;
+   gap: 6px;
+}
+
+.huffman-warning {
+   color: #fde68a;
+}
+
+.huffman-error {
+   color: #fca5a5;
 }

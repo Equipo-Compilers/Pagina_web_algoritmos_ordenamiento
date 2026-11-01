@@ -161,7 +161,7 @@ export function comprimir(bytes: Uint8Array): ResultadoCompresion {
 
 export function descomprimir(archivo: Uint8Array): Uint8Array {
   if (archivo.length < 11 || MAGIA.some((m, i) => archivo[i] !== m)) {
-    throw new Error("El archivo no es un .huff válido.");
+    throw new Error("El archivo no es un .iaa válido.");
   }
 
   const vista = new DataView(archivo.buffer, archivo.byteOffset, archivo.byteLength);
