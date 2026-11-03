@@ -74,7 +74,7 @@ export default function HuffmanInterface() {
         <input type="file" accept=".txt,text/plain" onChange={handleTxtSelected} />
 
         {text && (
-          <button onClick={handleCompress}>
+          <button className="huffman-section button" onClick={handleCompress}>
             Comprimir "{fileName}.txt"
           </button>
         )}
