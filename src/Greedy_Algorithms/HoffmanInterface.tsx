@@ -1,4 +1,4 @@
-import "./HoffmanInterface.css";
+import "./HuffmanInterface.css";
 import { useMemo, useState } from "react";
 import type { ChangeEvent } from "react";
 import { comprimir, descomprimir, nombreSimbolo } from "./algorithms/Huffman";
@@ -200,14 +200,14 @@ export default function HoffmanInterface() {
             <h2>Resultado de la compresión</h2>
             <div>Tamaño original: <strong>{original.length} bytes</strong> ({original.length * 8} bits)</div>
             <div>Bits codificados: <strong>{resultado.bitsTotales}</strong></div>
-            <div>Archivo .huff (con cabecera): <strong>{resultado.archivo.length} bytes</strong></div>
+            <div>Archivo .iaa (con cabecera): <strong>{resultado.archivo.length} bytes</strong></div>
             <div>
               {ahorro >= 0 ? "Ahorro" : "Aumento"}: <strong>{Math.abs(ahorro).toFixed(1)}%</strong>
             </div>
             <div className="huffBits">{resultado.vistaBits}</div>
             <div className="huffBotones">
-              <button className="huffBoton" onClick={() => descargar(resultado.archivo, "comprimido.huff", "application/octet-stream")}>
-                descargar .huff
+              <button className="huffBoton" onClick={() => descargar(resultado.archivo, "comprimido.iaa", "application/octet-stream")}>
+                descargar .iaa
               </button>
               <button className="huffBoton" onClick={() => mostrarRecuperado(resultado.archivo)}>
                 descomprimir este
@@ -278,11 +278,11 @@ export default function HoffmanInterface() {
       )}
 
       <section className="huffPanel">
-        <h2>6. Descomprimir un archivo .huff</h2>
+        <h2>6. Descomprimir un archivo .iaa</h2>
         <div className="huffBotones">
           <label className="huffBoton">
-            cargar .huff
-            <input type="file" accept=".huff" onChange={manejarCargarHuff} hidden />
+            cargar .iaa
+            <input type="file" accept=".iaa" onChange={manejarCargarHuff} hidden />
           </label>
           {recuperado && (
             <button className="huffBoton" onClick={() => descargar(recuperado.bytes, "recuperado.txt", "text/plain")}>
