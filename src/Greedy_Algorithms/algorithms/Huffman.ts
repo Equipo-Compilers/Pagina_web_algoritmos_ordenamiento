@@ -24,7 +24,7 @@ export interface ResultadoCompresion {
   archivo: Uint8Array;
 }
 
-const MAGIA = [0x48, 0x55, 0x46, 0x31]; // "HUF1"
+const MAGIA = [0x48, 0x55, 0x46, 0x31];
 
 export function nombreSimbolo(b: number): string {
   if (b === 32) return "␣";
@@ -67,7 +67,7 @@ export function construirArbol(frecuencias: Map<number, number>): {
 
   while (cola.length > 1) {
     cola.sort((a, b) => a.frecuencia - b.frecuencia || a.id - b.id);
-    const izq = cola.shift()!; // los dos menos frecuentes
+    const izq = cola.shift()!;
     const der = cola.shift()!;
     const nuevo: NodoHuffman = {
       id: siguienteId++,
@@ -87,7 +87,7 @@ export function generarCodigos(raiz: NodoHuffman): Map<number, string> {
   const codigos = new Map<number, string>();
   const recorrer = (n: NodoHuffman, prefijo: string) => {
     if (n.simbolo !== null) {
-      codigos.set(n.simbolo, prefijo || "0"); // caso de un solo símbolo
+      codigos.set(n.simbolo, prefijo || "0");
       return;
     }
     recorrer(n.izq!, prefijo + "0");

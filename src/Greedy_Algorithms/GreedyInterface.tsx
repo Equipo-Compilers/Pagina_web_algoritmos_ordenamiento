@@ -9,6 +9,8 @@ import {
   downloadBytes,
 } from "./algorithms/HuffmanCompresor";
 import type { CompressionStats } from "./algorithms/HuffmanCompresor";
+import GutenbergSearch from "./GutenbergSearch";
+import HuffmanTreeAnimation from "./hooks/HuffmanTreeAnimation";
 import "./Greedyinterface.css";
 
 export default function HuffmanInterface() {
@@ -18,18 +20,21 @@ export default function HuffmanInterface() {
   const [stats, setStats] = useState<CompressionStats | null>(null);
   const [error, setError] = useState<string>("");
 
+  function loadText(content: string, name: string) {
+    setError("");
+    setCompressed(null);
+    setStats(null);
+    setText(content);
+    setFileName(name);
+  }
+
   async function handleTxtSelected(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setError("");
-    setCompressed(null);
-    setStats(null);
-
     try {
       const content = await readTextFile(file);
-      setText(content);
-      setFileName(file.name.replace(/\.txt$/i, ""));
+      loadText(content, file.name.replace(/\.txt$/i, ""));
     } catch {
       setError("No se pudo leer el archivo.");
     }
@@ -56,7 +61,7 @@ export default function HuffmanInterface() {
       const original = decompress(bytes);
 
       const outBytes = new TextEncoder().encode(original);
-      downloadBytes(outBytes, `${file.name.replace(/\.huff$/i, "")}_recuperado.txt`);
+      downloadBytes(outBytes, `${file.name.replace(/\.iaa$/i, "")}_recuperado.txt`);
     } catch {
       setError("El archivo no es un .iaa válido.");
     }
@@ -69,12 +74,14 @@ export default function HuffmanInterface() {
 
       {error && <p className="huffman-error">{error}</p>}
 
+      <GutenbergSearch onTextLoaded={loadText} />
+
       <section className="huffman-section">
         <h2> Comprimir un .txt</h2>
         <input type="file" accept=".txt,text/plain" onChange={handleTxtSelected} />
 
         {text && (
-          <button className="huffman-section button" onClick={handleCompress}>
+          <button onClick={handleCompress}>
             Comprimir "{fileName}.txt"
           </button>
         )}
@@ -97,10 +104,7 @@ export default function HuffmanInterface() {
         )}
       </section>
 
-      <section className="huffman-section">
-        <h2>Comprimir desde Project Gutemberg</h2>
-
-      </section>
+      {compressed && <HuffmanTreeAnimation text={text} autoPlay />}
 
       <section className="huffman-section">
         <h2> Recuperar un .iaa</h2>

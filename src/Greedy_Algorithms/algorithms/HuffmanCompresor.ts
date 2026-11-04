@@ -68,11 +68,29 @@ class Heap{
 
         return top;
     }
+
+    snapshot(): HuffmanNode[] {
+        return [...this.data].sort((a, b) => a.freq - b.freq || a.order - b.order);
+    }
 }
 
-export function countFrequencies(bytes: Uint8Array){
+export function textToSymbols(text: string): number[] {
+    return Array.from(text, (ch) => ch.codePointAt(0)!);
+}
+
+export function symbolsToText(symbols: ArrayLike<number>): string {
+    const parts: string[] = [];
+    const CHUNK = 8192;
+    for (let i = 0; i < symbols.length; i += CHUNK) {
+        const end = Math.min(i + CHUNK, symbols.length);
+        parts.push(String.fromCodePoint(...Array.from({ length: end - i }, (_, j) => symbols[i + j])));
+    }
+    return parts.join("");
+}
+
+export function countFrequencies(symbols: Iterable<number>){
     const freqs = new Map<number, number>();
-    for(const b of bytes) freqs.set(b, (freqs.get(b) ?? 0) + 1);
+    for(const s of symbols) freqs.set(s, (freqs.get(s) ?? 0) + 1);
     return freqs;
 }
 
@@ -97,6 +115,41 @@ export function buildTree(freqs: Map<number, number>): HuffmanNode{
     return heap.pop();
 }
 
+export interface TreeStep {
+    forest: HuffmanNode[];
+    merged: { left: HuffmanNode; right: HuffmanNode; parent: HuffmanNode } | null;
+    step: number;
+    totalSteps: number;
+}
+
+export function* buildTreeSteps(freqs: Map<number, number>): Generator<TreeStep> {
+    if (freqs.size === 0) return;
+
+    const heap = new Heap();
+    let order = 0;
+    const totalSteps = freqs.size - 1;
+
+    const symbols = [...freqs.keys()].sort((a, b) => a - b);
+    for (const s of symbols) {
+        heap.push(new HuffmanNode(s, freqs.get(s)!, order++));
+    }
+
+    yield { forest: heap.snapshot(), merged: null, step: 0, totalSteps };
+
+    let step = 0;
+    while (heap.size > 1) {
+        const left = heap.pop();
+        const right = heap.pop();
+        const parent = new HuffmanNode(null, left.freq + right.freq, order++);
+        parent.left = left;
+        parent.right = right;
+        heap.push(parent);
+
+        step++;
+        yield { forest: heap.snapshot(), merged: { left, right, parent }, step, totalSteps };
+    }
+}
+
 export function generateCodes(root: HuffmanNode): Map<number, string> {
     const codes = new Map<number, string>();
 
@@ -118,18 +171,18 @@ export function generateCodes(root: HuffmanNode): Map<number, string> {
     return codes;
 }
 
-export function encodeToBits(bytes: Uint8Array, codes: Map<number, string>): string{
+export function encodeToBits(symbols: ArrayLike<number>, codes: Map<number, string>): string{
     const parts: string[] = [];
-    
-    for(const b of bytes){
-        parts.push(codes.get(b)!);
+
+    for(let i = 0; i < symbols.length; i++){
+        parts.push(codes.get(symbols[i])!);
     }
 
-    return parts.join("")
+    return parts.join("");
 }
 
-export function decodeFromBits(bits: string, root: HuffmanNode, totalSymbols: number): Uint8Array{
-    const out = new Uint8Array(totalSymbols);
+export function decodeFromBits(bits: string, root: HuffmanNode, totalSymbols: number): Uint32Array{
+    const out = new Uint32Array(totalSymbols);
 
     if (root.symbol !== null) {
         out.fill(root.symbol);
@@ -141,7 +194,7 @@ export function decodeFromBits(bits: string, root: HuffmanNode, totalSymbols: nu
 
     for (let i = 0; i < bits.length && n < totalSymbols; i++) {
         node = (bits[i] === "0" ? node.left : node.right)!;
-        
+
         if (node.symbol !== null) {
             out[n++] = node.symbol;
             node = root;
@@ -151,30 +204,36 @@ export function decodeFromBits(bits: string, root: HuffmanNode, totalSymbols: nu
     return out;
 }
 
+const FORMAT_MARK = 0xA2;
+const ENTRY_SIZE = 7;
+
 export function compress(text: string): Uint8Array {
-    const bytes = new TextEncoder().encode(text);
-    const freqs =  countFrequencies(bytes);
+    const symbols = textToSymbols(text);
+    const freqs = countFrequencies(symbols);
     const k = freqs.size;
 
-    if (k === 0) return new Uint8Array([0, 0, 0]);
+    if (k === 0) return new Uint8Array([FORMAT_MARK, 0, 0, 0, 0]);
 
     const root = buildTree(freqs);
     const codes = generateCodes(root);
-    const bits = encodeToBits(bytes, codes);
+    const bits = encodeToBits(symbols, codes);
 
     const padding = (8 - (bits.length % 8)) % 8;
     const dataBytes = (bits.length + padding) / 8;
-    const headerSize = 2 + k * 5 + 1;
+    const headerSize = 1 + 4 + k * ENTRY_SIZE + 1;
     const out = new Uint8Array(headerSize + dataBytes);
     const view = new DataView(out.buffer);
 
     let p = 0;
-    view.setUint16(p, k); 
-    p+=2;
-    
+    out[p++] = FORMAT_MARK;
+    view.setUint32(p, k);
+    p += 4;
+
     for(const[symbol, freq] of freqs){
-        out[p++] = symbol;
-        view.setUint32(p, freq); 
+        out[p++] = (symbol >> 16) & 0xff;
+        out[p++] = (symbol >> 8) & 0xff;
+        out[p++] = symbol & 0xff;
+        view.setUint32(p, freq);
         p += 4;
     }
 
@@ -182,42 +241,55 @@ export function compress(text: string): Uint8Array {
 
     for (let i = 0; i < bits.length; i += 8) {
         let byte = 0;
-    
+
         for (let j = 0; j < 8; j++) {
             byte = (byte << 1) | (bits[i + j] === "1" ? 1 : 0);
         }
-    out[p++] = byte;
-  }
+        out[p++] = byte;
+    }
 
-  return out;
+    return out;
 }
 
 export function decompress(data: Uint8Array): string {
+    if (data.length < 5 || data[0] !== FORMAT_MARK) {
+        throw new Error("Formato no reconocido: no es un archivo .iaa de esta versión.");
+    }
+
     const view = new DataView(data.buffer, data.byteOffset, data.byteLength);
-    let p = 0;
-    const k = view.getUint16(p); p += 2;
+    let p = 1;
+    const k = view.getUint32(p); p += 4;
     if (k === 0) return "";
-    
+
+    if (p + k * ENTRY_SIZE + 1 > data.length) {
+        throw new Error("Archivo .iaa incompleto o dañado.");
+    }
+
     const freqs = new Map<number, number>();
     let total = 0;
     for (let i = 0; i < k; i++) {
-        const symbol = data[p++];
+        const symbol = (data[p] << 16) | (data[p + 1] << 8) | data[p + 2];
+        p += 3;
         const freq = view.getUint32(p); p += 4;
         freqs.set(symbol, freq);
         total += freq;
     }
     const padding = data[p++];
-    
+
     const chunks: string[] = [];
     for (let i = p; i < data.length; i++) chunks.push(data[i].toString(2).padStart(8, "0"));
     let bits = chunks.join("");
     if (padding > 0) bits = bits.slice(0, bits.length - padding);
-    
+
+    if (total > bits.length) {
+        throw new Error("Archivo .iaa incompleto o dañado.");
+    }
+
     const root = buildTree(freqs);
-    return new TextDecoder().decode(decodeFromBits(bits, root, total));
+    return symbolsToText(decodeFromBits(bits, root, total));
 }
- 
- 
+
+
 export interface CompressionStats {
     originalBytes: number;
     compressedBytes: number;

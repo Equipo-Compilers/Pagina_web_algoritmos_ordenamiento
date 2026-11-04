@@ -1,0 +1,98 @@
+.gutenberg-section {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 12px;
+    background: linear-gradient(to bottom, #a359b9, #2e073d);
+    color: white;
+}
+
+.gutenberg-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.gutenberg-form input {
+    flex: 1 1 200px;
+    min-width: 0;
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+}
+
+.gutenberg-form select {
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+}
+
+.gutenberg-section button {
+    background-color: #52B773;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.gutenberg-section button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.gutenberg-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 320px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.gutenberg-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+.gutenberg-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.gutenberg-meta,
+.gutenberg-count {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.gutenberg-fallback {
+    padding: 10px;
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.gutenberg-fallback a {
+    color: #fde68a;
+}
+
+.gutenberg-ok {
+    color: #bbf7d0;
+}
+
+.gutenberg-error {
+    color: #fca5a5;
+}

@@ -1,4 +1,4 @@
-import "./HuffmanInterface.css";
+import "./HoffmanInterface.css";
 import { useMemo, useState } from "react";
 import type { ChangeEvent } from "react";
 import { comprimir, descomprimir, nombreSimbolo } from "./algorithms/Huffman";

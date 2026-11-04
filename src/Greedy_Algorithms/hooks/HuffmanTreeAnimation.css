@@ -1,0 +1,150 @@
+.tree-anim-section {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+    border-radius: 12px;
+    background: linear-gradient(to bottom, #a359b9, #2e073d);
+    color: white;
+    box-sizing: border-box;
+}
+
+.tree-anim-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.tree-anim-controls button {
+    background-color: #52B773;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.tree-anim-controls button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.tree-anim-controls select {
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+}
+
+.tree-anim-slider {
+    width: 100%;
+}
+
+.tree-anim-step {
+    margin: 0;
+    font-size: 13px;
+    opacity: 0.85;
+}
+
+.tree-anim-description {
+    margin: 0;
+    min-height: 3em;
+}
+
+.tree-anim-canvas {
+    overflow: auto;
+    max-height: 480px;
+    border-radius: 8px;
+    background-color: #111827;
+}
+
+.tree-edge {
+    stroke: #9ca3af;
+    stroke-width: 1.5;
+}
+
+.tree-edge-bit {
+    fill: #fde68a;
+    font-size: 11px;
+    text-anchor: middle;
+    dominant-baseline: middle;
+}
+
+.tree-node circle {
+    stroke: #e5e7eb;
+    stroke-width: 1.5;
+}
+
+.tree-node-leaf circle {
+    fill: white;
+}
+
+.tree-node-inner circle {
+    fill: #c4b5fd;
+}
+
+.tree-node-label {
+    fill: #111827;
+    font-weight: bold;
+    font-family: monospace;
+    text-anchor: middle;
+    dominant-baseline: central;
+}
+
+.tree-node-freq {
+    fill: #d1d5db;
+    font-size: 10px;
+    text-anchor: middle;
+}
+
+.tree-node-hot circle {
+    stroke: #facc15;
+    stroke-width: 3;
+}
+
+.tree-node-new {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: treeNodeAppear 0.4s ease-out;
+}
+
+@keyframes treeNodeAppear {
+    0% { opacity: 0; transform: scale(0); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.tree-anim-codes {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.tree-anim-codes h3 {
+    margin: 0 0 4px;
+}
+
+.tree-anim-hint {
+    font-size: 12px;
+    opacity: 0.8;
+    margin: 0 0 8px;
+}
+
+.tree-anim-codes table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.tree-anim-codes th,
+.tree-anim-codes td {
+    text-align: left;
+    padding: 3px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.tree-anim-code {
+    font-family: monospace;
+    letter-spacing: 1px;
+}
