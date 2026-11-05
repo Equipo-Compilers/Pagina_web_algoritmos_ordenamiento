@@ -1,4 +1,4 @@
-import './Algorithminterface.css';
+import './AlgorithmInterface.css';
 import { useState } from 'react';
 import { generador } from './generador';
 import { useSortAnimation } from './hooks/useSortAnimation';

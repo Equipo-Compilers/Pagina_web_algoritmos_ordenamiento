@@ -12,7 +12,7 @@ import type { CompressionStats } from "./algorithms/HuffmanCompresor";
 import GutenbergSearch from "./GutenbergSearch";
 import HuffmanTreeAnimation from "./hooks/HuffmanTreeAnimation";
 import { animationDataFromText } from "./algorithms/HuffmanAnimationFromText";
-import "./Greedyinterface.css";
+import "./GreedyInterface.css";
 
 export default function HuffmanInterface() {
   const [fileName, setFileName] = useState<string>("");
