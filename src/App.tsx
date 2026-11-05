@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Card from "./Card";
 import AlgorithmInterface from "./Sort_Algorithms/AlgorithmInterface";
 import GreedyInterface from "./Greedy_Algorithms/GreedyInterface";
-import HuffmanInterface from "./Greedy_Algorithms/HoffmanInterface";
+import HuffmanInterface from "./Greedy_Algorithms/HuffmanInterface";
 
 function Home() {
     return (

@@ -182,6 +182,9 @@ export function descomprimir(archivo: Uint8Array): Uint8Array {
   if (n === 0) throw new Error("Cabecera dañada.");
 
   const datos = archivo.subarray(pos);
+
+  if (longitud > datos.length * 8) throw new Error("Archivo corrupto: faltan datos.");
+
   const { raiz } = construirArbol(frecuencias); 
 
   if (raiz.simbolo !== null) {

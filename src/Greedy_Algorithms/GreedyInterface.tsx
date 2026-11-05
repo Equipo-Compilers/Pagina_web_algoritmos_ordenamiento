@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { ChangeEvent } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -11,6 +11,7 @@ import {
 import type { CompressionStats } from "./algorithms/HuffmanCompresor";
 import GutenbergSearch from "./GutenbergSearch";
 import HuffmanTreeAnimation from "./hooks/HuffmanTreeAnimation";
+import { animationDataFromText } from "./algorithms/HuffmanAnimationFromText";
 import "./Greedyinterface.css";
 
 export default function HuffmanInterface() {
@@ -19,6 +20,9 @@ export default function HuffmanInterface() {
   const [compressed, setCompressed] = useState<Uint8Array | null>(null);
   const [stats, setStats] = useState<CompressionStats | null>(null);
   const [error, setError] = useState<string>("");
+  const [step, setStep] = useState(0);
+
+  const animationData = useMemo(() => (compressed ? animationDataFromText(text) : null), [compressed, text]);
 
   function loadText(content: string, name: string) {
     setError("");
@@ -43,6 +47,7 @@ export default function HuffmanInterface() {
   function handleCompress() {
     const result = compress(text);
     setCompressed(result);
+    setStep(0);
     setStats(getStats(text, result));
   }
 
@@ -104,7 +109,12 @@ export default function HuffmanInterface() {
         )}
       </section>
 
-      {compressed && <HuffmanTreeAnimation text={text} autoPlay />}
+      {animationData && (
+        <section className="huffman-section tree-anim-host">
+          <h2> Construcción del árbol de Huffman</h2>
+          <HuffmanTreeAnimation data={animationData} step={step} onStepChange={setStep} showCodes />
+        </section>
+      )}
 
       <section className="huffman-section">
         <h2> Recuperar un .iaa</h2>

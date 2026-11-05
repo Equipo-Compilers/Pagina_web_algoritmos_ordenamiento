@@ -1,14 +1,9 @@
-.tree-anim-section {
-    width: 100%;
-    max-width: 900px;
+.tree-anim {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding: 16px;
-    border-radius: 12px;
-    background: linear-gradient(to bottom, #a359b9, #2e073d);
-    color: white;
-    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
 }
 
 .tree-anim-controls {
@@ -58,51 +53,58 @@
     overflow: auto;
     max-height: 480px;
     border-radius: 8px;
-    background-color: #111827;
+    background-color: rgba(17, 24, 39, 0.75);
 }
 
 .tree-edge {
-    stroke: #9ca3af;
-    stroke-width: 1.5;
+    stroke: #b86bf2;
+    stroke-width: 2;
 }
 
 .tree-edge-bit {
-    fill: #fde68a;
-    font-size: 11px;
+    fill: #2fd4c0;
+    font-size: 12px;
+    font-weight: bold;
     text-anchor: middle;
     dominant-baseline: middle;
 }
 
 .tree-node circle {
-    stroke: #e5e7eb;
+    stroke: #ffffff;
     stroke-width: 1.5;
 }
 
 .tree-node-leaf circle {
-    fill: white;
+    fill: #2fd4c0;
 }
 
 .tree-node-inner circle {
-    fill: #c4b5fd;
+    fill: #a24be0;
 }
 
 .tree-node-label {
-    fill: #111827;
     font-weight: bold;
-    font-family: monospace;
     text-anchor: middle;
     dominant-baseline: central;
 }
 
+.tree-node-leaf .tree-node-label {
+    fill: #13131a;
+}
+
+.tree-node-inner .tree-node-label {
+    fill: #ffffff;
+}
+
 .tree-node-freq {
-    fill: #d1d5db;
-    font-size: 10px;
+    fill: #e8e0ff;
+    font-size: 11px;
     text-anchor: middle;
 }
 
 .tree-node-hot circle {
     stroke: #facc15;
-    stroke-width: 3;
+    stroke-width: 3.5;
 }
 
 .tree-node-new {
@@ -147,4 +149,8 @@
 .tree-anim-code {
     font-family: monospace;
     letter-spacing: 1px;
+}
+
+.huffman-section.tree-anim-host {
+    max-width: 900px;
 }
