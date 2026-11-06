@@ -2,7 +2,6 @@ import { useRef, useState } from "react";
 import type { FormEvent } from "react";
 import {
   searchBooks,
-  searchNextPage,
   downloadBookText,
   bookPageUrl,
   safeFileName,
@@ -20,7 +19,8 @@ export default function GutenbergSearch({ onTextLoaded }: GutenbergSearchProps) 
   const [language, setLanguage] = useState("");
   const [books, setBooks] = useState<GutenbergBook[]>([]);
   const [total, setTotal] = useState(0);
-  const [nextUrl, setNextUrl] = useState<string | null>(null);
+  const [nextPage, setNextPage] = useState<number | null>(null);
+  const [lastSearch, setLastSearch] = useState({ query: "", language: "" });
   const [searched, setSearched] = useState(false);
   const [loading, setLoading] = useState(false);
   const [downloadingId, setDownloadingId] = useState<number | null>(null);
@@ -29,40 +29,39 @@ export default function GutenbergSearch({ onTextLoaded }: GutenbergSearchProps) 
   const [failReasons, setFailReasons] = useState<string[]>([]);
   const [loadedTitle, setLoadedTitle] = useState("");
 
-  const abortRef = useRef<AbortController | null>(null);
+  const searchIdRef = useRef(0);
 
   async function handleSearch(e: FormEvent) {
     e.preventDefault();
     if (!query.trim()) return;
 
-    abortRef.current?.abort();
-    const controller = new AbortController();
-    abortRef.current = controller;
-
+    const searchId = ++searchIdRef.current;
     setLoading(true);
     setError("");
     setFailedBook(null);
     try {
-      const page = await searchBooks(query, language, controller.signal);
+      const page = await searchBooks(query, language);
+      if (searchId !== searchIdRef.current) return;
       setBooks(page.books);
       setTotal(page.total);
-      setNextUrl(page.nextUrl);
+      setNextPage(page.nextPage);
+      setLastSearch({ query, language });
       setSearched(true);
     } catch (err) {
-      if (controller.signal.aborted) return;
+      if (searchId !== searchIdRef.current) return;
       setError(err instanceof Error ? err.message : "No se pudo buscar. Revisa tu conexión e inténtalo de nuevo.");
     } finally {
-      if (!controller.signal.aborted) setLoading(false);
+      if (searchId === searchIdRef.current) setLoading(false);
     }
   }
 
   async function handleMore() {
-    if (!nextUrl) return;
+    if (nextPage === null) return;
     setLoading(true);
     try {
-      const page = await searchNextPage(nextUrl);
+      const page = await searchBooks(lastSearch.query, lastSearch.language, nextPage);
       setBooks((prev) => [...prev, ...page.books]);
-      setNextUrl(page.nextUrl);
+      setNextPage(page.nextPage);
     } catch {
       setError("No se pudieron cargar más resultados.");
     } finally {
@@ -155,7 +154,7 @@ export default function GutenbergSearch({ onTextLoaded }: GutenbergSearchProps) 
                   <strong>{book.title}</strong>
                   <span>{book.authors.join(", ") || "Autor desconocido"}</span>
                   <span className="gutenberg-meta">
-                    {book.languages.join(", ")} · {book.downloadCount.toLocaleString()} descargas
+                    {book.languages.join(", ") || "idioma desconocido"} · n.º {book.id}
                   </span>
                 </div>
                 <button
@@ -168,7 +167,7 @@ export default function GutenbergSearch({ onTextLoaded }: GutenbergSearchProps) 
             ))}
           </ul>
 
-          {nextUrl && (
+          {nextPage !== null && (
             <button className="gutenberg-more" onClick={handleMore} disabled={loading}>
               {loading ? "Cargando..." : "Más resultados"}
             </button>

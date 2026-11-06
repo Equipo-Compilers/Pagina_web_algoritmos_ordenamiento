@@ -1,117 +1,110 @@
 const API_BASE = ((import.meta.env?.VITE_API_BASE as string | undefined) ?? "").replace(/\/+$/, "");
 const PROXY_URL = `${API_BASE}/api/gutenberg`;
-const GUTENDEX_URL = "https://gutendex.com/books";
+
+const CATALOG_URL = `${(import.meta.env?.BASE_URL as string | undefined) ?? "/"}catalog.json`;
+const PAGE_SIZE = 32;
 
 export interface GutenbergBook {
   id: number;
   title: string;
   authors: string[];
   languages: string[];
-  downloadCount: number;
-  textUrl: string | null;
 }
 
 export interface SearchPage {
   total: number;
   books: GutenbergBook[];
-  nextUrl: string | null;
-}
-
-interface ApiBook {
-  id: number;
-  title: string;
-  authors: { name: string }[];
-  languages: string[];
-  download_count: number;
-  formats: Record<string, string>;
-}
-interface ApiResponse {
-  count: number;
-  next: string | null;
-  results: ApiBook[];
+  nextPage: number | null;
 }
 
 export class DownloadError extends Error {
   reasons: string[] = [];
 }
 
-function pickTextUrl(formats: Record<string, string>): string | null {
-  const preferred = formats["text/plain; charset=utf-8"];
-  if (preferred) return preferred;
-  const key = Object.keys(formats).find((k) => k.startsWith("text/plain"));
-  return key ? formats[key] : null;
+type CatalogRow = [number, string, string, string];
+
+interface CatalogEntry extends GutenbergBook {
+  titleNorm: string;
+  hay: string;
 }
 
-function toBook(b: ApiBook): GutenbergBook {
-  return {
-    id: b.id,
-    title: b.title,
-    authors: b.authors.map((a) => a.name),
-    languages: b.languages,
-    downloadCount: b.download_count,
-    textUrl: pickTextUrl(b.formats),
-  };
+function normalize(s: string): string {
+  return s
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
+    .trim();
 }
 
-async function fetchSearch(urls: string[], signal?: AbortSignal): Promise<SearchPage> {
-  const reasons: string[] = [];
-  for (const url of urls) {
-    const label = url.startsWith(PROXY_URL) ? "función de Vercel" : "directo a Gutendex";
-    try {
-      const res = await fetch(url, { signal });
-      if (!res.ok) {
-        let body = "";
-        try {
-          body = (await res.text()).slice(0, 150);
-        } catch {
-          body = "";
-        }
-        reasons.push(`${label}: HTTP ${res.status} ${body}`.trim());
-        continue;
-      }
-      if ((res.headers.get("content-type") ?? "").includes("text/html")) {
-        reasons.push(`${label}: devolvió una página web en vez de datos`);
-        continue;
-      }
-      const data = (await res.json()) as ApiResponse;
-      return { total: data.count, books: data.results.map(toBook), nextUrl: data.next };
-    } catch (err) {
-      if (signal?.aborted) throw err;
-      reasons.push(`${label}: el navegador bloqueó la petición (CORS) o no hay conexión`);
-    }
+let catalogPromise: Promise<CatalogEntry[]> | null = null;
+
+async function fetchCatalog(): Promise<CatalogEntry[]> {
+  let res: Response;
+  try {
+    res = await fetch(CATALOG_URL);
+  } catch {
+    throw new Error("No se pudo cargar el catálogo de libros (sin conexión).");
   }
-  throw new Error(`No se pudo consultar el catálogo. ${reasons.join(" | ")}`);
+  const notFound =
+    "No se encontró el catálogo de libros (catalog.json). Genéralo con «node scripts/build-catalog.mjs», colócalo en la carpeta public/ y vuelve a desplegar.";
+  if (!res.ok || (res.headers.get("content-type") ?? "").includes("text/html")) throw new Error(notFound);
+
+  const data = (await res.json()) as { books?: CatalogRow[] };
+  if (!Array.isArray(data.books)) throw new Error("El archivo catalog.json no tiene el formato esperado.");
+
+  return data.books.map(([id, title, authors, langs]) => {
+    const authorList = authors ? authors.split(";").map((a) => a.trim()).filter(Boolean) : [];
+    const titleNorm = normalize(title);
+    return {
+      id,
+      title,
+      authors: authorList,
+      languages: langs ? langs.split(";") : [],
+      titleNorm,
+      hay: `${titleNorm} ${normalize(authorList.join(" "))}`,
+    };
+  });
 }
 
-function searchUrls(query: string, language: string, page: string): string[] {
-  const proxy = new URLSearchParams({ q: query });
-  const direct = new URLSearchParams({ search: query });
-  if (language) {
-    proxy.set("lang", language);
-    direct.set("languages", language);
+function loadCatalog(): Promise<CatalogEntry[]> {
+  if (!catalogPromise) {
+    catalogPromise = fetchCatalog().catch((err) => {
+      catalogPromise = null;
+      throw err;
+    });
   }
-  if (page) {
-    proxy.set("page", page);
-    direct.set("page", page);
+  return catalogPromise;
+}
+
+export async function searchBooks(query: string, language: string, page = 1): Promise<SearchPage> {
+  const catalog = await loadCatalog();
+  const tokens = normalize(query).split(" ").filter(Boolean);
+  if (tokens.length === 0) return { total: 0, books: [], nextPage: null };
+
+  const phrase = tokens.join(" ");
+  const matches: { entry: CatalogEntry; score: number }[] = [];
+  for (const entry of catalog) {
+    if (language !== "" && !entry.languages.includes(language)) continue;
+    if (!tokens.every((t) => entry.hay.includes(t))) continue;
+    let score = 0;
+    if (entry.titleNorm.includes(phrase)) score += 4;
+    if (entry.titleNorm.startsWith(phrase)) score += 2;
+    const padded = ` ${entry.titleNorm}`;
+    for (const t of tokens) if (padded.includes(` ${t}`)) score += 1;
+    matches.push({ entry, score });
   }
-  return [`${PROXY_URL}?${proxy}`, `${GUTENDEX_URL}?${direct}`];
-}
 
-export function searchBooks(query: string, language: string, signal?: AbortSignal): Promise<SearchPage> {
-  return fetchSearch(searchUrls(query.trim(), language, ""), signal);
-}
+  matches.sort((a, b) => b.score - a.score || a.entry.id - b.entry.id);
 
-export function searchNextPage(nextUrl: string, signal?: AbortSignal): Promise<SearchPage> {
-  const next = new URL(nextUrl.replace(/^http:\/\//, "https://"));
-  if (next.origin !== "https://gutendex.com") throw new Error("Dirección de búsqueda no válida.");
-  return fetchSearch(
-    searchUrls(
-      next.searchParams.get("search") ?? "",
-      next.searchParams.get("languages") ?? "",
-      next.searchParams.get("page") ?? ""
-    ),
-    signal
-  );
+  const start = (page - 1) * PAGE_SIZE;
+  const books = matches.slice(start, start + PAGE_SIZE).map(({ entry }) => ({
+    id: entry.id,
+    title: entry.title,
+    authors: entry.authors,
+    languages: entry.languages,
+  }));
+  return { total: matches.length, books, nextPage: start + PAGE_SIZE < matches.length ? page + 1 : null };
 }
 
 export function stripGutenbergLicense(raw: string): string {
@@ -143,15 +136,15 @@ async function describeProxyFailure(res: Response): Promise<string> {
 }
 
 export async function downloadBookText(book: GutenbergBook, signal?: AbortSignal): Promise<string> {
-  const attempts: { label: string; url: string }[] = [{ label: "función de Vercel", url: `${PROXY_URL}?id=${book.id}` }];
-  for (const url of [book.textUrl, `https://www.gutenberg.org/cache/epub/${book.id}/pg${book.id}.txt`]) {
-    if (url !== null && !attempts.some((a) => a.url === url)) attempts.push({ label: "directo a Gutenberg", url });
-  }
+  const attempts = [
+    { label: "función de Vercel", url: `${PROXY_URL}?id=${book.id}` },
+    { label: "directo a Gutenberg", url: `https://www.gutenberg.org/cache/epub/${book.id}/pg${book.id}.txt` },
+  ];
 
   const reasons: string[] = [];
   for (const { label, url } of attempts) {
     try {
-      const res = await fetch(url.replace(/^http:\/\//, "https://"), { signal });
+      const res = await fetch(url, { signal });
       if (!res.ok) {
         reasons.push(`${label}: ${label === "función de Vercel" ? await describeProxyFailure(res) : `Gutenberg respondió HTTP ${res.status}`}`);
         continue;
