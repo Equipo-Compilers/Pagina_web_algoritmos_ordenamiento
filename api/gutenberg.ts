@@ -1,21 +1,10 @@
-// api/gutenberg.ts — función de Vercel que hace de intermediario entre tu página
-// y Project Gutenberg / Gutendex. El navegador bloquea (CORS) leer esas páginas
-// directamente; este servidor sí puede, y le responde a tu página con los permisos correctos.
-//
-// Dos usos (solo método GET):
-//   /api/gutenberg?q=quijote&lang=es&page=2   -> busca libros (devuelve el JSON de Gutendex)
-//   /api/gutenberg?id=2000                    -> devuelve el texto (.txt) del libro 2000
-//
-// Seguridad: la función NUNCA recibe una dirección de internet. Solo acepta un id numérico
-// y un texto de búsqueda, y arma ella misma las direcciones de Gutenberg y Gutendex.
-
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { gzipSync } from "node:zlib";
 
 const GUTENDEX_URL = "https://gutendex.com/books";
 const MAX_UPSTREAM_BYTES = 25_000_000;
 const MAX_RESPONSE_BYTES = 4_400_000;
-const UPSTREAM_TIMEOUT_MS = 8_000;
+const UPSTREAM_TIMEOUT_MS = 12_000;
 const USER_AGENT = "AlgorithmView-student-project";
 
 class TooLargeError extends Error {}
@@ -28,27 +17,46 @@ function send(res: ServerResponse, status: number, body: string | Uint8Array, he
   res.end(body);
 }
 
-function sendError(res: ServerResponse, status: number, code: string, headers: Headers): void {
-  send(res, status, JSON.stringify({ error: code }), {
+function sendError(
+  res: ServerResponse,
+  status: number,
+  code: string,
+  headers: Headers,
+  extra: Record<string, unknown> = {}
+): void {
+  send(res, status, JSON.stringify({ error: code, ...extra }), {
     ...headers,
     "Content-Type": "application/json; charset=utf-8",
     "Cache-Control": "no-store",
   });
 }
 
-async function fetchLimited(url: string, allowedHost: string): Promise<Uint8Array | null> {
+function describeError(err: unknown): string {
+  if (err instanceof Error) {
+    const cause = (err as Error & { cause?: { code?: string } }).cause;
+    return cause?.code ? `${err.name}: ${cause.code}` : `${err.name}: ${err.message}`;
+  }
+  return "error desconocido";
+}
+
+interface UpstreamResult {
+  status: number;
+  data: Uint8Array | null;
+}
+
+async function fetchLimited(url: string, allowedHost: string): Promise<UpstreamResult> {
   const r = await fetch(url, {
     headers: { "User-Agent": USER_AGENT },
     redirect: "follow",
     signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
   });
-  if (!r.ok) return null;
-  if (!new URL(r.url).hostname.endsWith(allowedHost)) return null;
+  if (!r.ok) return { status: r.status, data: null };
+  if (!new URL(r.url).hostname.endsWith(allowedHost)) return { status: 0, data: null };
 
   if (Number(r.headers.get("content-length") ?? 0) > MAX_UPSTREAM_BYTES) throw new TooLargeError();
 
   const reader = r.body?.getReader();
-  if (!reader) return null;
+  if (!reader) return { status: 0, data: null };
   const chunks: Uint8Array[] = [];
   let total = 0;
   for (;;) {
@@ -61,7 +69,7 @@ async function fetchLimited(url: string, allowedHost: string): Promise<Uint8Arra
     }
     chunks.push(value);
   }
-  return Buffer.concat(chunks);
+  return { status: 200, data: Buffer.concat(chunks) };
 }
 
 async function handleBook(req: IncomingMessage, res: ServerResponse, id: string, cors: Headers): Promise<void> {
@@ -73,16 +81,23 @@ async function handleBook(req: IncomingMessage, res: ServerResponse, id: string,
   ];
 
   let raw: Uint8Array | null = null;
+  const statuses: number[] = [];
   for (const url of candidates) {
     try {
-      raw = await fetchLimited(url, "gutenberg.org");
+      const result = await fetchLimited(url, "gutenberg.org");
+      statuses.push(result.status);
+      raw = result.data;
     } catch (err) {
       if (err instanceof TooLargeError) throw err;
+      statuses.push(0);
       raw = null;
     }
     if (raw) break;
   }
-  if (!raw) return sendError(res, 404, "not_found", cors);
+  if (!raw) {
+    if (statuses.every((s) => s === 404)) return sendError(res, 404, "not_found", cors);
+    return sendError(res, 502, "upstream_error", cors, { upstream: statuses });
+  }
 
   const acceptsGzip = /\bgzip\b/.test(String(req.headers["accept-encoding"] ?? ""));
   const body = acceptsGzip ? gzipSync(raw) : raw;
@@ -95,6 +110,24 @@ async function handleBook(req: IncomingMessage, res: ServerResponse, id: string,
   };
   if (acceptsGzip) headers["Content-Encoding"] = "gzip";
   send(res, 200, body, headers);
+}
+
+async function fetchWithRetry(url: string): Promise<Response> {
+  let lastResponse: Response | null = null;
+  let lastError: unknown = null;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const r = await fetch(url, { headers: { "User-Agent": USER_AGENT }, signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS) });
+      if (r.status < 500) return r;
+      lastResponse = r;
+      lastError = null;
+    } catch (err) {
+      lastError = err;
+      lastResponse = null;
+    }
+  }
+  if (lastResponse) return lastResponse;
+  throw lastError;
 }
 
 async function handleSearch(res: ServerResponse, params: URLSearchParams, cors: Headers): Promise<void> {
@@ -110,9 +143,9 @@ async function handleSearch(res: ServerResponse, params: URLSearchParams, cors: 
   if (lang) url += `&languages=${lang}`;
   if (page) url += `&page=${page}`;
 
-  const r = await fetch(url, { headers: { "User-Agent": USER_AGENT }, signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS) });
+  const r = await fetchWithRetry(url);
   if (r.status === 404) return sendError(res, 404, "not_found", cors);
-  if (!r.ok) return sendError(res, 502, "upstream_error", cors);
+  if (!r.ok) return sendError(res, 502, "upstream_error", cors, { upstream: r.status });
 
   send(res, 200, await r.text(), {
     ...cors,
@@ -142,6 +175,6 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     return sendError(res, 400, "bad_request", cors);
   } catch (err) {
     if (err instanceof TooLargeError) return sendError(res, 413, "too_large", cors);
-    return sendError(res, 502, "upstream_error", cors);
+    return sendError(res, 502, "upstream_error", cors, { detail: describeError(err) });
   }
 }

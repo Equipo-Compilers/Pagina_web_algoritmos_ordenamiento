@@ -8,7 +8,6 @@ import {
   safeFileName,
   DownloadError,
 } from "./algorithms/Gutenberg";
-
 import type { GutenbergBook } from "./algorithms/Gutenberg";
 import "./GutenbergSearch.css";
 
@@ -27,6 +26,7 @@ export default function GutenbergSearch({ onTextLoaded }: GutenbergSearchProps) 
   const [downloadingId, setDownloadingId] = useState<number | null>(null);
   const [error, setError] = useState("");
   const [failedBook, setFailedBook] = useState<GutenbergBook | null>(null);
+  const [failReasons, setFailReasons] = useState<string[]>([]);
   const [loadedTitle, setLoadedTitle] = useState("");
 
   const abortRef = useRef<AbortController | null>(null);
@@ -48,9 +48,9 @@ export default function GutenbergSearch({ onTextLoaded }: GutenbergSearchProps) 
       setTotal(page.total);
       setNextUrl(page.nextUrl);
       setSearched(true);
-    } catch {
+    } catch (err) {
       if (controller.signal.aborted) return;
-      setError("No se pudo buscar. Revisa tu conexión e inténtalo de nuevo.");
+      setError(err instanceof Error ? err.message : "No se pudo buscar. Revisa tu conexión e inténtalo de nuevo.");
     } finally {
       if (!controller.signal.aborted) setLoading(false);
     }
@@ -81,6 +81,7 @@ export default function GutenbergSearch({ onTextLoaded }: GutenbergSearchProps) 
     } catch (err) {
       if (err instanceof DownloadError) {
         setFailedBook(book);
+        setFailReasons(err.reasons);
       } else {
         setError("Ocurrió un error al descargar el libro.");
       }
@@ -118,10 +119,16 @@ export default function GutenbergSearch({ onTextLoaded }: GutenbergSearchProps) 
       {failedBook && (
         <div className="gutenberg-fallback">
           <p>
-            El navegador no permitió descargar "{failedBook.title}" automáticamente.
-            Descárgalo tú: abre el libro en Gutenberg, elige "Plain Text UTF-8", guárdalo
-            y súbelo con el selector de archivos de abajo.
+            No se pudo descargar "{failedBook.title}" automáticamente. Descárgalo tú: abre el libro
+            en Gutenberg, elige "Plain Text UTF-8", guárdalo y súbelo con el selector de archivos de abajo.
           </p>
+          {failReasons.length > 0 && (
+            <ul className="gutenberg-reasons">
+              {failReasons.map((reason, i) => (
+                <li key={i}>{reason}</li>
+              ))}
+            </ul>
+          )}
           <a href={bookPageUrl(failedBook)} target="_blank" rel="noreferrer">
             Abrir en Gutenberg
           </a>
