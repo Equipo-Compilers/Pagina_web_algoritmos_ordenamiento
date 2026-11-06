@@ -12,6 +12,7 @@
 //     --output=ruta.json   dónde guardar el resultado (por defecto public/catalog.json)
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const CSV_URL = "https://www.gutenberg.org/cache/epub/feeds/pg_catalog.csv";
 
@@ -105,8 +106,9 @@ async function main() {
   console.log(`Listo: ${books.length.toLocaleString()} libros -> ${output} (${(json.length / 1e6).toFixed(1)} MB). Idiomas principales: ${top}`);
 }
 
-// Solo se ejecuta cuando lo llamas desde la terminal (no cuando otro archivo lo importa)
-if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"))) {
+// Solo se ejecuta cuando lo llamas desde la terminal (no cuando otro archivo lo importa).
+// fileURLToPath convierte bien rutas con espacios, acentos y letras de unidad de Windows (C:\...)
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   main().catch((err) => {
     console.error("\nError:", err.message);
     process.exit(1);
