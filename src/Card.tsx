@@ -43,11 +43,11 @@ function GraficoAnimado({ tipo }: { tipo?: TipoAnimacion }) {
   if (tipo === "ordenamiento") {
     return (
       <div className="anim-barras">
-        <div className="barra b1"></div>
-        <div className="barra b2"></div>
-        <div className="barra b3"></div>
-        <div className="barra b4"></div>
-        <div className="barra b5"></div>
+        <div className="barral b1"></div>
+        <div className="barral b2"></div>
+        <div className="barral b3"></div>
+        <div className="barral lb4"></div>
+        <div className="barral b5"></div>
       </div>
     );
   }
