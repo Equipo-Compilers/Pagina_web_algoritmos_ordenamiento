@@ -12,9 +12,10 @@ import "./GutenbergSearch.css";
 
 interface GutenbergSearchProps {
   onTextLoaded: (text: string, name: string) => void;
+  textoProcesado?: string; // Recibe el resultado ya comprimido/procesado desde el componente padre
 }
 
-export default function GutenbergSearch({ onTextLoaded }: GutenbergSearchProps) {
+export default function GutenbergSearch({ onTextLoaded, textoProcesado = "" }: GutenbergSearchProps) {
   const [query, setQuery] = useState("");
   const [language, setLanguage] = useState("");
   const [books, setBooks] = useState<GutenbergBook[]>([]);
@@ -28,9 +29,6 @@ export default function GutenbergSearch({ onTextLoaded }: GutenbergSearchProps) 
   const [failedBook, setFailedBook] = useState<GutenbergBook | null>(null);
   const [failReasons, setFailReasons] = useState<string[]>([]);
   const [loadedTitle, setLoadedTitle] = useState("");
-  
-  // NUEVO ESTADO para guardar el texto leído y mostrarlo en el cuadro
-  const [textoContenido, setTextoContenido] = useState("");
 
   const searchIdRef = useRef(0);
 
@@ -78,10 +76,6 @@ export default function GutenbergSearch({ onTextLoaded }: GutenbergSearchProps) 
     setFailedBook(null);
     try {
       const text = await downloadBookText(book);
-      
-      // Guardamos una muestra o el texto completo en el estado para visualizarlo
-      setTextoContenido(text); 
-
       onTextLoaded(text, safeFileName(book.title));
       setLoadedTitle(book.title);
     } catch (err) {
@@ -182,16 +176,16 @@ export default function GutenbergSearch({ onTextLoaded }: GutenbergSearchProps) 
         </>
       )}
 
-      {/* NUEVO CUADRO PARA MOSTRAR EL TEXTO CARGADO / COMPRIMIDO */}
-      {textoContenido && (
+      {/* CUADRO PARA MOSTRAR EL ARCHIVO PROCESADO / COMPRIMIDO */}
+      {textoProcesado && (
         <div className="gutenberg-preview-box">
-          <h3>Texto leído / Previsualización:</h3>
+          <h3>Archivo procesado / Comprimido:</h3>
           <textarea
             className="gutenberg-textarea-preview"
-            value={textoContenido}
+            value={textoProcesado}
             readOnly
             rows={6}
-            placeholder="El contenido del archivo aparecerá aquí..."
+            placeholder="El resultado comprimido aparecerá aquí..."
           />
         </div>
       )}
