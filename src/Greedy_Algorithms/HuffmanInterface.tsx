@@ -180,6 +180,26 @@ export default function HoffmanInterface() {
             <h2>Construcción del árbol (izquierda = 0, derecha = 1)</h2>
             {animationData && <HuffmanTreeAnimation data={animationData} step={paso} onStepChange={setPaso} />}
           </section>
+
+          {/* CUADRO PARA MOSTRAR Y LEER EL TEXTO PROCESADO / RECUPERADO DESPUÉS DE LAS GRÁFICAS */}
+          <section className="huffPanel">
+            <h2>Texto Procesado / Comprimido</h2>
+            <p className="text-xs text-purple-400 mb-3" style={{ color: "#b794f4", fontSize: "0.85rem", marginBottom: "8px" }}>
+              Resultado final del texto procesado:
+            </p>
+            <textarea
+              className="huffTextarea"
+              value={recuperado ? recuperado.texto : texto}
+              readOnly
+              placeholder="El texto procesado aparecerá aquí una vez que se cargue o descomprima..."
+              rows={8}
+              style={{ width: "100%", fontFamily: "monospace", resize: "vertical" }}
+            />
+            <div className="flex justify-between items-center mt-2 text-xs" style={{ display: "flex", justifyContent: "space-between", marginTop: "8px", fontSize: "0.85rem", color: "#b794f4" }}>
+              <span>Caracteres: {recuperado ? recuperado.texto.length.toLocaleString() : texto.length.toLocaleString()}</span>
+              <span>Listo para leer o copiar</span>
+            </div>
+          </section>
         </>
       )}
 
