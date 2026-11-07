@@ -22,6 +22,10 @@ export default function HuffmanInterface() {
   const [error, setError] = useState<string>("");
   const [step, setStep] = useState(0);
 
+  const [iaaFile, setIaaFile] = useState<File | null>(null);
+  const [iaaError, setIaaError] = useState<string>("");
+  const [iaaResult, setIaaResult] = useState<string>("");
+
   const animationData = useMemo(() => (compressed ? animationDataFromText(text) : null), [compressed, text]);
 
   function loadText(content: string, name: string) {
@@ -56,26 +60,34 @@ export default function HuffmanInterface() {
     downloadBytes(compressed, `${fileName}.iaa`);
   }
 
-  async function handleHuffSelected(e: ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  function handleHuffSelected(e: ChangeEvent<HTMLInputElement>) {
+    setIaaFile(e.target.files?.[0] ?? null);
+    setIaaError("");
+    setIaaResult("");
+  }
 
-    setError("");
+  async function handleDecompress() {
+    if (!iaaFile) return;
+
+    setIaaError("");
+    setIaaResult("");
     try {
-      const bytes = new Uint8Array(await file.arrayBuffer());
+      const bytes = new Uint8Array(await iaaFile.arrayBuffer());
       const original = decompress(bytes);
 
       const outBytes = new TextEncoder().encode(original);
-      downloadBytes(outBytes, `${file.name.replace(/\.iaa$/i, "")}_recuperado.txt`);
+      const outName = `${iaaFile.name.replace(/\.iaa$/i, "")}_recuperado.txt`;
+      downloadBytes(outBytes, outName);
+      setIaaResult(`Se descomprimió "${iaaFile.name}": ${outBytes.length.toLocaleString()} bytes. Se descargó "${outName}".`);
     } catch {
-      setError("El archivo no es un .iaa válido.");
+      setIaaError("El archivo no es un .iaa válido.");
     }
   }
 
   return (
     <div className="huffman-page">
       <Link to="/" className="huffman-back">← Volver</Link>
-      <h1>Compresor de archivos </h1>
+      <h1>Compresor de libros de Project Gutenberg </h1>
 
       {error && <p className="huffman-error">{error}</p>}
 
@@ -119,6 +131,18 @@ export default function HuffmanInterface() {
       <section className="huffman-section">
         <h2> Recuperar un .iaa</h2>
         <input type="file" accept=".iaa" onChange={handleHuffSelected} />
+
+        {iaaFile && (
+          <>
+            <p>
+              Archivo cargado: "{iaaFile.name}" ({iaaFile.size.toLocaleString()} bytes)
+            </p>
+            <button onClick={handleDecompress}>Descomprimir y descargar .txt</button>
+          </>
+        )}
+
+        {iaaError && <p className="huffman-error">{iaaError}</p>}
+        {iaaResult && <p>{iaaResult}</p>}
       </section>
     </div>
   );
