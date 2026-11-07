@@ -12,10 +12,9 @@ import "./GutenbergSearch.css";
 
 interface GutenbergSearchProps {
   onTextLoaded: (text: string, name: string) => void;
-  textoProcesado?: string; // Recibe el resultado ya procesado/comprimido desde el componente padre
 }
 
-export default function GutenbergSearch({ onTextLoaded, textoProcesado = "" }: GutenbergSearchProps) {
+export default function GutenbergSearch({ onTextLoaded }: GutenbergSearchProps) {
   const [query, setQuery] = useState("");
   const [language, setLanguage] = useState("");
   const [books, setBooks] = useState<GutenbergBook[]>([]);
@@ -29,6 +28,9 @@ export default function GutenbergSearch({ onTextLoaded, textoProcesado = "" }: G
   const [failedBook, setFailedBook] = useState<GutenbergBook | null>(null);
   const [failReasons, setFailReasons] = useState<string[]>([]);
   const [loadedTitle, setLoadedTitle] = useState("");
+  
+  // Estado local para almacenar el texto procesado/cargado y mostrarlo en el cuadro
+  const [textoProcesado, setTextoProcesado] = useState("");
 
   const searchIdRef = useRef(0);
 
@@ -76,6 +78,8 @@ export default function GutenbergSearch({ onTextLoaded, textoProcesado = "" }: G
     setFailedBook(null);
     try {
       const text = await downloadBookText(book);
+      // Guardamos el texto en el estado local para que aparezca en el cuadro de texto
+      setTextoProcesado(text);
       onTextLoaded(text, safeFileName(book.title));
       setLoadedTitle(book.title);
     } catch (err) {
@@ -184,7 +188,7 @@ export default function GutenbergSearch({ onTextLoaded, textoProcesado = "" }: G
           className="w-full h-40 p-3 bg-[#120822] text-purple-200 border border-purple-500/40 rounded-lg font-mono text-sm resize-y focus:outline-none focus:border-purple-400"
           value={textoProcesado}
           readOnly
-          placeholder="El texto procesado aparecerá aquí..."
+          placeholder="El texto procesado aparecerá aquí en cuanto se cargue o procese..."
         />
         <div className="flex justify-between items-center mt-2 text-xs text-purple-400">
           <span>Caracteres: {textoProcesado ? textoProcesado.length.toLocaleString() : 0}</span>
