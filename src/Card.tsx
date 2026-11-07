@@ -46,7 +46,7 @@ function GraficoAnimado({ tipo }: { tipo?: TipoAnimacion }) {
         <div className="barral b1"></div>
         <div className="barral b2"></div>
         <div className="barral b3"></div>
-        <div className="barral lb4"></div>
+        <div className="barral b4"></div>
         <div className="barral b5"></div>
       </div>
     );
@@ -57,6 +57,8 @@ function GraficoAnimado({ tipo }: { tipo?: TipoAnimacion }) {
       <div className="anim-arbol">
         <div className="nodo raiz"></div>
         <div className="ramas">
+          <div className="linea linea-izq"></div>
+          <div className="linea linea-der"></div>
           <div className="nodo hijo-izq"></div>
           <div className="nodo hijo-der"></div>
         </div>
