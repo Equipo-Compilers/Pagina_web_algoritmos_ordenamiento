@@ -28,9 +28,6 @@ export default function GutenbergSearch({ onTextLoaded }: GutenbergSearchProps) 
   const [failedBook, setFailedBook] = useState<GutenbergBook | null>(null);
   const [failReasons, setFailReasons] = useState<string[]>([]);
   const [loadedTitle, setLoadedTitle] = useState("");
-  
-  // Estado local para almacenar el texto procesado/cargado y mostrarlo en el cuadro
-  const [textoProcesado, setTextoProcesado] = useState("");
 
   const searchIdRef = useRef(0);
 
@@ -78,8 +75,6 @@ export default function GutenbergSearch({ onTextLoaded }: GutenbergSearchProps) 
     setFailedBook(null);
     try {
       const text = await downloadBookText(book);
-      // Guardamos el texto en el estado local para que aparezca en el cuadro de texto
-      setTextoProcesado(text);
       onTextLoaded(text, safeFileName(book.title));
       setLoadedTitle(book.title);
     } catch (err) {
@@ -179,22 +174,6 @@ export default function GutenbergSearch({ onTextLoaded }: GutenbergSearchProps) 
           )}
         </>
       )}
-
-      {/* CUADRO PARA MOSTRAR Y LEER EL TEXTO PROCESADO */}
-      <div className="mt-6 p-4 bg-[#1e1035] rounded-xl border border-purple-500/30 text-white">
-        <h3 className="text-lg font-semibold mb-2 text-purple-300">Texto Procesado / Comprimido</h3>
-        <p className="text-xs text-purple-400 mb-3">Aquí puedes revisar el resultado final del texto procesado:</p>
-        <textarea
-          className="w-full h-40 p-3 bg-[#120822] text-purple-200 border border-purple-500/40 rounded-lg font-mono text-sm resize-y focus:outline-none focus:border-purple-400"
-          value={textoProcesado}
-          readOnly
-          placeholder="El texto procesado aparecerá aquí en cuanto se cargue o procese..."
-        />
-        <div className="flex justify-between items-center mt-2 text-xs text-purple-400">
-          <span>Caracteres: {textoProcesado ? textoProcesado.length.toLocaleString() : 0}</span>
-          <span>Listo para copiar o exportar</span>
-        </div>
-      </div>
     </section>
   );
 }
