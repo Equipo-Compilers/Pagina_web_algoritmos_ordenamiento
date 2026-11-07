@@ -12,7 +12,7 @@ import "./GutenbergSearch.css";
 
 interface GutenbergSearchProps {
   onTextLoaded: (text: string, name: string) => void;
-  textoProcesado?: string; // Recibe el resultado ya comprimido/procesado desde el componente padre
+  textoProcesado?: string; // Recibe el resultado ya procesado/comprimido desde el componente padre
 }
 
 export default function GutenbergSearch({ onTextLoaded, textoProcesado = "" }: GutenbergSearchProps) {
@@ -176,21 +176,20 @@ export default function GutenbergSearch({ onTextLoaded, textoProcesado = "" }: G
         </>
       )}
 
-      {/* SECCIÓN CORREGIDA: Muestra siempre el cuadro si hay texto procesado o da un aviso visual */}
-      <div className="gutenberg-preview-box">
-        <h3>Resultado Procesado / Comprimido:</h3>
+      {/* CUADRO PARA MOSTRAR Y LEER EL TEXTO PROCESADO */}
+      <div className="mt-6 p-4 bg-[#1e1035] rounded-xl border border-purple-500/30 text-white">
+        <h3 className="text-lg font-semibold mb-2 text-purple-300">Texto Procesado / Comprimido</h3>
+        <p className="text-xs text-purple-400 mb-3">Aquí puedes revisar el resultado final del texto procesado:</p>
         <textarea
-          className="gutenberg-textarea-preview"
+          className="w-full h-40 p-3 bg-[#120822] text-purple-200 border border-purple-500/40 rounded-lg font-mono text-sm resize-y focus:outline-none focus:border-purple-400"
           value={textoProcesado}
           readOnly
-          rows={8}
-          placeholder="El resultado del texto comprimido aparecerá aquí una vez que el proceso finalice..."
+          placeholder="El texto procesado aparecerá aquí..."
         />
-        {textoProcesado && (
-          <p className="gutenberg-meta-info">
-            Tamaño del resultado: {textoProcesado.length.toLocaleString()} caracteres.
-          </p>
-        )}
+        <div className="flex justify-between items-center mt-2 text-xs text-purple-400">
+          <span>Caracteres: {textoProcesado ? textoProcesado.length.toLocaleString() : 0}</span>
+          <span>Listo para copiar o exportar</span>
+        </div>
       </div>
     </section>
   );
