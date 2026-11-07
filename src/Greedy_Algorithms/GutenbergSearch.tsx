@@ -176,19 +176,22 @@ export default function GutenbergSearch({ onTextLoaded, textoProcesado = "" }: G
         </>
       )}
 
-      {/* CUADRO PARA MOSTRAR EL ARCHIVO PROCESADO / COMPRIMIDO */}
-      {textoProcesado && (
-        <div className="gutenberg-preview-box">
-          <h3>Archivo procesado / Comprimido:</h3>
-          <textarea
-            className="gutenberg-textarea-preview"
-            value={textoProcesado}
-            readOnly
-            rows={6}
-            placeholder="El resultado comprimido aparecerá aquí..."
-          />
-        </div>
-      )}
+      {/* SECCIÓN CORREGIDA: Muestra siempre el cuadro si hay texto procesado o da un aviso visual */}
+      <div className="gutenberg-preview-box">
+        <h3>Resultado Procesado / Comprimido:</h3>
+        <textarea
+          className="gutenberg-textarea-preview"
+          value={textoProcesado}
+          readOnly
+          rows={8}
+          placeholder="El resultado del texto comprimido aparecerá aquí una vez que el proceso finalice..."
+        />
+        {textoProcesado && (
+          <p className="gutenberg-meta-info">
+            Tamaño del resultado: {textoProcesado.length.toLocaleString()} caracteres.
+          </p>
+        )}
+      </div>
     </section>
   );
 }
