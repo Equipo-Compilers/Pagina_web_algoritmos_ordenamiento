@@ -16,6 +16,7 @@ import { complejidades } from './algorithms/Complejidades';
 import { compararAlgoritmos, generarGraficaSVG } from './algorithms/Graficas';
 import DualComparision from './comparations/DualComparison';
 import logoImg from '.././Logo/logo.jpeg';
+import { Link } from 'react-router-dom';
 
 const CANTIDAD_INICIAL = 18;
 
@@ -104,6 +105,7 @@ export default function App() {
   return (
     <div className="pantallaCompleta">
       <header className="cabecera">
+        <Link to="/" className="botonVolver">← Volver</Link>
         <img src={logoImg} alt="Logo" className="logo" />
 
         <div className="grupoBotones">
