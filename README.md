@@ -36,11 +36,11 @@ A su vez se busca analizar el algoritmo de Huffman mediante un compresor de text
 #Formato de carpetas en el GitHub
 La arquitectura del repositorio sigue una organización estándar para facilitar el desarrollo y despliegue continuo. A continuación se detalla el propósito de los directorios y archivos principales:
 
-- **`.github/workflows/`**: Contiene las configuraciones de GitHub Actions para automatización e integración continua (CI/CD)[cite: 2].
-- **`api/`**: Directorio destinado al código backend o funciones serverless[cite: 2].
-- **`public/`**: Almacena archivos estáticos y recursos que se sirven directamente (imágenes, iconos, etc.)[cite: 2].
-- **`scripts/`**: Contiene scripts de utilidad para tareas de automatización o configuración del proyecto[cite: 2].
-- **`src/`**: Carpeta principal donde reside el código fuente de la aplicación (componentes, estilos, lógica, etc.)[cite: 2].
+- **`.github/workflows/`**: Contiene las configuraciones de GitHub Actions para automatización e integración continua.
+- **`api/`**: Directorio destinado al código backend o funciones serverless.
+- **`public/`**: Almacena archivos estáticos y recursos que se sirven directamente (imágenes, iconos, etc.).
+- **`scripts/`**: Contiene scripts de utilidad para tareas de automatización o configuración del proyecto.
+- **`src/`**: Carpeta principal donde reside el código fuente de la aplicación (componentes, estilos, lógica, etc.).
 
 # Uso de IA (Utilizada para corregir errores, ejemplos de codigo y documentacion)
 - Gemini
