@@ -1,9 +1,12 @@
 import "./App.css";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Card from "./Card";
 import AlgorithmInterface from "./Sort_Algorithms/AlgorithmInterface";
-import GreddyInterface from "./Greedy_Algorithms/GreedyInterface";
+import GreedyInterface from "./Greedy_Algorithms/GreedyInterface";
+import HuffmanInterface from "./Greedy_Algorithms/HuffmanInterface";
 
-function Inicio() {
+
+function Home() {
     return (
       
         <div className="body">
@@ -25,10 +28,11 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/Pagina_web_algoritmos_ordenamiento_tecnica_voraz/" element={<Inicio />} />
-        <Route path="/" element={<Inicio />} />
-        <Route path="/algoritmos" element={< AlgorithmInterface />} />
-        <Route path="/algoritmos_voracez" element={< GreddyInterface />} />
+        <Route path="/Pagina_web_algoritmos_ordenamiento_tecnica_voraz/" element={<Home />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/algoritmos" element={<AlgorithmInterface />} />
+        <Route path="/algoritmo_huffman" element={<HuffmanInterface/>} />
+        <Route path="/algoritmos_voracez" element={<GreedyInterface />} />
       </Routes>
     </BrowserRouter>
   );
