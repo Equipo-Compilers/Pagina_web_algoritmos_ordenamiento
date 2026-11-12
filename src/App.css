@@ -4,18 +4,19 @@
   box-sizing: border-box;
 }
 
-.page {
+.body {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(to bottom, #2a0d2e 20%, #35035e 80%);
-  padding-top: 100px;
+  background: linear-gradient(100deg, #462057, #85168f);
+  padding-top: 100px; 
   position: relative;
 }
 
-.header {
+
+.cabecera {
   position: absolute;
   top: 0;
   left: 0;
@@ -26,27 +27,50 @@
   padding: 20px 0;
   z-index: 10;
 }
-
-.header-title {
-  color: #ffffff;
-  font-size: 50px;
-  margin-top: 4%;
-
+.enlaces {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 400px;
+  padding: 0 20px;
 }
+.contenedorEnlaces {
+  width: 100%;
+   background: linear-gradient(to bottom, #a359b9, #2e073d); 
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  overflow: hidden; 
+}
+.contenedorEnlaces a {
+  text-decoration: none;
+  display: block;
+  width: 100%;
+  padding: 18px 20px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff; 
+  text-align: center;
+}
+.contenedorEnlaces:hover {
+  background-color: #f16cf1;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(187, 65, 228, 0.856);
+}
+.contenedorEnlaces:hover a {
+  color:white;
+  font-size: 22px;} 
 
 @media (max-width: 768px) {
-  .header {
-    margin-bottom: 30px;
+  .cabecera {
+    margin-bottom: 25px;
   }
 
   .logo {
     width: 90px;
   }
 
-  .header-title {
-    font-size: 30px;
-    margin-top: 3%;
-    margin-bottom: 5%;
-    text-align: center;
+  .titulo-cabecera {
+    font-size: 22px;
   }
 }

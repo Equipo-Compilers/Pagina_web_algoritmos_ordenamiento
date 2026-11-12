@@ -8,33 +8,17 @@ import HuffmanInterface from "./Greedy_Algorithms/HuffmanInterface";
 
 function Home() {
     return (
-        <div className="page">
-            <header className="header">
-                <h1 className="header-title">Algorithmview</h1>
-            </header>
+      
+        <div className="body">
+          <header className="cabecera">
+             <h1>Algorithmview</h1>
+            <img src="../\Pagina_web_algoritmos_ordenamiento\Pagina_web_algoritmos_ordenamiento\src\Logo" alt="logo" className="logo"/>
+           
 
-            <div className="card-container">
-                <Card
-                    title="Algoritmos de ordenamiento"
-                    backgroundColor="#1f2937"
-                    tags={["Bubble Sort", "Quick Sort", "Merge Sort"]}
-                    route="/algoritmos"
-                    animationType="ordenamiento"
-                />
-                <Card
-                    title="Algoritmo de Huffman"
-                    backgroundColor="#374151"
-                    tags={["Huffman"]}
-                    route="/algoritmo_huffman"
-                    animationType="huffman"
-                />
-                <Card
-                    title="Compresor de libros"
-                    backgroundColor="#374151"
-                    tags={["Compresor"]}
-                    route="/algoritmos_voracez"
-                    animationType="compresor"
-                />
+          </header>
+            <div className="enlaces">
+               <div className="contenedorEnlaces"><Link to="/algoritmos">Ir a visualizar algoritmos</Link></div> 
+               <div className="contenedorEnlaces"> <Link to="/algoritmos_voracez">Ir a algoritmos voracez</Link></div>
             </div>
         </div>
     );
